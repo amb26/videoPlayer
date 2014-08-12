@@ -11,12 +11,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, window, fluid_1_5*/
+/*global jQuery, window, fluid*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
-var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
     fluid.setLogging(false);
@@ -674,7 +672,7 @@ var fluid_1_5 = fluid_1_5 || {};
     };
 
     /******************************************************************************************************
-     * Converts JSON from Amara (http://www.universalsubtitles.org/api/1.0/subtitles/) into WebVTT format.
+     * Converts JSON from Amara (http://www.amara.org/api/1.0/subtitles/) into WebVTT format.
      * Each caption in WebVTT looks like:
      *  empty line
      *  HH:MM:SS.mmm --> HH:MM:SS.mmm
@@ -700,9 +698,9 @@ var fluid_1_5 = fluid_1_5 || {};
         }
 
         // Hard coded URL to amara here         
-        var url = encodeURI("http://www.universalsubtitles.org/api2/partners/videos/?video_url=" + videoUrl + "&callback=?");        
+        var url = encodeURI("http://www.amara.org/api2/partners/videos/?video_url=" + videoUrl + "&callback=?");        
         $.getJSON(url, function( data ) {
-            var captionUrl = encodeURI("http://www.universalsubtitles.org/api2/partners/videos/" + data.objects[0].id + "/languages/" + lang + "/subtitles/?callback=?");        
+            var captionUrl = encodeURI("http://www.amara.org/api2/partners/videos/" + data.objects[0].id + "/languages/" + lang + "/subtitles/?callback=?");        
             $.getJSON(captionUrl, callback);            
         });
         
@@ -730,4 +728,4 @@ var fluid_1_5 = fluid_1_5 || {};
         }
     });
     
-})(jQuery, fluid_1_5);
+})(jQuery, fluid);

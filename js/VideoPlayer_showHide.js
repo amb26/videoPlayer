@@ -9,12 +9,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, window, fluid_1_5*/
+/*global jQuery, window, fluid*/
 
 // JSLint options 
 /*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
-var fluid_1_5 = fluid_1_5 || {};
 
 (function ($, fluid) {
 
@@ -73,4 +71,4 @@ var fluid_1_5 = fluid_1_5 || {};
         container.toggle(newVal);
     };
 
-})(jQuery, fluid_1_5);
+})(jQuery, fluid);

@@ -1,0 +1,3 @@
+Infusion: Built from latest master, commit 41ff48c61bdb9463a32e079af8c281ddc4ee7de4 using
+    grunt custom --source=true --include="preferences, tooltip, progress, jQueryScrollToPlugin"
+
