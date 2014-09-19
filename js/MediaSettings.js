@@ -126,13 +126,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
 
+/*
     // Grade for adding the media panels to prefsEditor
     fluid.defaults("fluid.videoPlayer.mediaPanels", {
         // The ideal grade list is to include "fluid.prefs.prefsEditor" so that the "mediaPanels" can be
         // used independently without the need to specify "fluid.prefs.prefsEditor" explicitly. However,
         // applying it in the grade list causing prefsEditor rendered twice. Needs to find out the
         // cause.
-        gradeNames: [/*"fluid.prefs",*/"fluid.viewComponent", "fluid.progressiveCheckerForComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.progressiveCheckerForComponent", "autoInit"],
         componentName: "fluid.videoPlayer.mediaPanels", // where to look for progressive checker options
         progressiveCheckerOptions: {
             checks: [{
@@ -167,6 +168,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
+*/
 
     // This grade is solely for the purpose of adding the captions settings panel to fluid.videoPlayer.mediaPanels
     // (which doesn't happen if native video is not supported). It should never be instantiated.
@@ -197,6 +199,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /**
      * A grade used to add the relay subcomponent to uiEnhancer
      */
+/*
     fluid.defaults("fluid.videoPlayer.vpRelay", {
         gradeNames: ["fluid.littleComponent", "autoInit"],
         components: {
@@ -205,8 +208,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
+*/
 
     // Define templates for PrefsEditor with media settings
+/*
     fluid.defaults("fluid.videoPlayer.mediaPanelTemplateLoader", {
         gradeNames: ["fluid.prefs.resourceLoader", "fluid.progressiveCheckerForComponent", "autoInit"],
         componentName: "fluid.videoPlayer.mediaPanelTemplateLoader",
@@ -233,6 +238,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             prefsEditor: "../html/SeparatedPanelNoNativeVideo.html"
         }
     });
+*/
 
     /**
      * A grade responsible for binding the UIEnhancer relay to the VideoPlayer
@@ -247,9 +253,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.videoPlayer.enhancerBinder.bindRelay = function (that, callback) {
         callback = callback || fluid.identity;
         // TODO: We need a way to wait for UIE if necessary (see FLUID-5016)
+/*
         if (fluid.staticEnvironment.uiEnhancer) {
             fluid.staticEnvironment.uiEnhancer.relay.addTarget(that);
         }
+*/
         callback(that);
     };
 

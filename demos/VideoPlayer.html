@@ -24,9 +24,7 @@
 
         <!-- Fluid and jQuery Dependencies -->
         <script type="text/javascript" src="../lib/infusion/infusion-custom.js"></script>
-<!--
         <script type="text/javascript" src="../js/MediaSettings.js"></script>
--->
         <!-- Utils -->
         <script type="text/javascript" src="../lib/jquery-ui/js/jquery.ui.button.js"></script>
         <script type="text/javascript" src="../lib/captionator/js/captionator.js"></script>
@@ -45,9 +43,7 @@
         <script type="text/javascript" src="../js/VideoPlayer_media.js"></script>
         <script type="text/javascript" src="../js/VideoPlayer_transcript.js"></script>
         <script type="text/javascript" src="../js/VideoPlayer_intervalEventsConductor.js"></script>
-<!--
         <script type="text/javascript" src="../js/VideoPlayer_prefsEditor.js"></script>
--->
 
         </head>
     <body>
@@ -73,15 +69,37 @@
         </div>
 
         <script>
+            // add extra prefs to starter primary schemas
+            fluid.videoPlayer.primarySchema = {
+                "fluid.videoPlayer.transcripts.display": {
+                    "type": "boolean",
+                    "default": false
+                },
+                "fluid.videoPlayer.transcripts.language": {
+                    "type": "string",
+                    "default": "en"
+                }
+            };
             fluid.defaults("vp.auxSchema.extraPanels", {
                 auxiliarySchema: {
                     // specify augmented container template for panels
-                    template: "../html/SeparatedPanel.html"
+                    template: "../html/SeparatedPanel.html",
+
+                    transcripts: {
+                        type: "fluid.videoPlayer.transcripts.display",
+                        panel: {
+                            type: "fluid.videoPlayer.panel.transcriptsSettings",
+                            container: ".flc-prefsEditor-transcripts-settings",
+                            template: "../html/MediaPanelTemplate.html",
+                            message: "../messages/transcripts.json"
+                        }
+                    }
                 }
             });
             var prefsEditor = fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
                 build: {
-                    gradeNames:  ["fluid.prefs.auxSchema.starter", "vp.auxSchema.extraPanels"]
+                    gradeNames:  ["fluid.prefs.auxSchema.starter", "vp.auxSchema.extraPanels"],
+                    primarySchema: fluid.videoPlayer.primarySchema
                 },
                 prefsEditor: {
                     tocTemplate: "../lib/infusion/src/components/tableOfContents/html/TableOfContents.html",
@@ -161,7 +179,6 @@
                 videoTitle: "A chance to reorganize our future?"
             };
             fluid.videoPlayer(".videoPlayer", vpOptions);
-//            fluid.invoke("fluid.videoPlayer", [".videoPlayer", vpOptions]);
         </script>
     </body>
 </html>
