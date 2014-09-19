@@ -51,6 +51,20 @@
 
         </head>
     <body>
+        <!-- Markup for PrefsEditor  -->
+        <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
+            <!-- This is the div that will contain the Preference Editor component -->
+            <div class="flc-slidingPanel-panel flc-prefsEditor-iframe gpii-feedbackDemo-prefsEditor-slidingPanel"></div>
+            <!-- This div is for the sliding panel that shows and hides the Preference Editor controls -->
+            <div class="fl-panelBar row">
+                <span class="fl-prefsEditor-buttons">
+                    <button id="reset" class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                    <button id="show-hide" class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                </span>
+            </div>
+        </div>
+        <!-- End markup for PrefsEditor  -->
+
         <div class="flc-toc-tocContainer"> </div>
 
         <h1>Infusion HTML 5 Video Player</h1>
@@ -59,6 +73,34 @@
         </div>
 
         <script>
+            fluid.defaults("vp.auxSchema.extraPanels", {
+                auxiliarySchema: {
+                    // specify augmented container template for panels
+                    template: "../html/SeparatedPanel.html"
+                }
+            });
+            var prefsEditor = fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
+                build: {
+                    gradeNames:  ["fluid.prefs.auxSchema.starter", "vp.auxSchema.extraPanels"]
+                },
+                prefsEditor: {
+                    tocTemplate: "../lib/infusion/src/components/tableOfContents/html/TableOfContents.html",
+                    templatePrefix: "../lib/infusion/src/framework/preferences/html/",
+                    messagePrefix: "../lib/infusion/src/framework/preferences/messages/",
+                    components: {
+                        prefsEditorLoader: {
+                            options: {
+                                iframeRenderer: {
+                                    markupProps: {
+                                        src: "../html/SeparatedPanelPrefsEditorFrame.html"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
             var vpOptions = {
                 gradeNames: ["fluid.videoPlayer.enhancerBinder"],
                 video: {
@@ -70,19 +112,23 @@
                         {
                             src: "videos/ReorganizeFuture/ReorganizeFuture.webm",
                             type: "video/webm"
+/*
                         },
                         {
                             src: "http://www.youtube.com/v/_VxQEPw1x9E",
                             type: "video/youtube"
+*/
                         }
                     ],
                     captions: [
+/*
                         {
                             src: "http://www.youtube.com/watch?v=_VxQEPw1x9E&language=en",
                             type: "text/amarajson",
                             srclang: "en",
                             label: "English"
                         },
+*/
                         {
                             src: "videos/ReorganizeFuture/ReorganizeFuture.fr.vtt",
                             type: "text/vtt",
@@ -91,6 +137,7 @@
                         }
                     ],
                     transcripts: [
+/*
                         {
                             // TO TEST the transcript processing of Universal Subtitles files for transcripts,
                             // substititute the following two lines
@@ -102,6 +149,7 @@
                             srclang: "en",
                             label: "English"
                         },
+*/
                         {
                             src: "videos/ReorganizeFuture/ReorganizeFuture.transcripts.fr.json",
                             type: "JSONcc",
