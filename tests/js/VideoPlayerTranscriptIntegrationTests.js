@@ -19,45 +19,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     fluid.staticEnvironment.vpTest = fluid.typeTag("fluid.tests.videoPlayer");
 
+    fluid.defaults("vp.auxSchema.extraPanels", {
+        auxiliarySchema: {
+            // specify augmented container template for panels
+            template: "../../html/SeparatedPanel.html"
+        }
+    });
+    fluid.videoPlayer.prefsEditorSetup("../../lib/infusion/src/components/tableOfContents/html/TableOfContents.html",
+        "../../lib/infusion/src/framework/preferences/html/",
+        "../../lib/infusion/src/framework/preferences/messages/",
+        "../../html/SeparatedPanelPrefsEditorFrame.html");
+
     $(document).ready(function () {
-        fluid.demands("templateLoader", ["fluid.prefs.separatedPanel", "fluid.tests.videoPlayer"], {
-            options: {
-                templates: {
-                    prefsEditor: "../../html/SeparatedPanelNoNativeVideo.html",
-                    captionsSettings: "../../html/MediaPanelTemplate.html",
-                    transcriptsSettings: "../../html/MediaPanelTemplate.html"
-                }
-            }
-        });
-        fluid.demands("templateLoader", ["fluid.browser.nativeVideoSupport", "fluid.prefs.separatedPanel", "fluid.tests.videoPlayer"], {
-            options: {
-                templates: {
-                    prefsEditor: "../../html/SeparatedPanel.html"
-                }
-            }
-        });
-        fluid.demands("messageLoader", ["fluid.prefs.separatedPanel", "fluid.tests.videoPlayer"], {
-            options: {
-                templates: {
-                    captionSettings: "../../messages/captions.json",
-                    transcriptSettings: "../../messages/transcripts.json"
-                }
-            }
-        });
-        var separatedPanel = fluid.prefs.separatedPanel(".flc-prefsEditor", {
-            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-            templatePrefix: "../../lib/infusion/framework/preferences/html/",
-            messagePrefix: "../../lib/infusion/framework/preferences/messages/",
-            templateLoader: {
-                gradeNames: ["fluid.videoPlayer.mediaPanelTemplateLoader", "fluid.prefs.starterTemplateLoader"]
-            },
-            messageLoader: {
-                gradeNames: ["fluid.videoPlayer.mediaPanelMessageLoader", "fluid.prefs.starterMessageLoader"]
-            },
-            prefsEditor: {
-                gradeNames: ["fluid.videoPlayer.mediaPanels", "fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"]
-            }
-        });
 
         jqUnit.module("Video Player Transcript Integration Tests");
 
@@ -69,11 +42,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     listeners: {
                         onReady: function (that) {
                             jqUnit.notVisible("Before PrefsEditor reset, transcripts are not visible", $(".flc-videoPlayer-transcriptArea"));
-                            separatedPanel.prefsEditor.events.onReset.addListener(function () {
+                            fluid.videoPlayer.prefsEditor.prefsEditorLoader.prefsEditor.events.onReset.addListener(function () {
                                 jqUnit.notVisible("After PrefsEditor reset, transcripts are not visible", $(".flc-videoPlayer-transcriptArea"));
                                 jqUnit.start();
                             });
-                            separatedPanel.prefsEditor.reset();
+                            fluid.videoPlayer.prefsEditor.prefsEditorLoader.prefsEditor.reset();
                         }
                     }
                 }

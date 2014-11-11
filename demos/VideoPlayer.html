@@ -17,7 +17,7 @@
         <link type="text/css" href="../lib/jquery-ui/css/ui-lightness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
         <link type="text/css" href="../css/VideoPlayer.css" rel="stylesheet" />
         <link type="text/css" href="../lib/captionator/css/captions.css" rel="stylesheet" />
-        <link type="text/css" href="PrefsEditor.css" rel="stylesheet" />
+        <link type="text/css" href="css/PrefsEditor.css" rel="stylesheet" />
         <!--[if lt IE 9]>
             <link type="text/css" href="../css/ltie9.css" rel="stylesheet" />
         <![endif]-->
@@ -44,6 +44,7 @@
         <script type="text/javascript" src="../js/VideoPlayer_transcript.js"></script>
         <script type="text/javascript" src="../js/VideoPlayer_intervalEventsConductor.js"></script>
         <script type="text/javascript" src="../js/VideoPlayer_prefsEditor.js"></script>
+        <script type="text/javascript" src="js/prefsEditor.js"></script>
 
         </head>
     <body>
@@ -69,56 +70,10 @@
         </div>
 
         <script>
-            // add extra prefs to starter primary schemas
-            fluid.videoPlayer.primarySchema = {
-                "fluid.videoPlayer.transcripts.display": {
-                    "type": "boolean",
-                    "default": false
-                },
-                "fluid.videoPlayer.transcripts.language": {
-                    "type": "string",
-                    "default": "en"
-                }
-            };
-            fluid.defaults("vp.auxSchema.extraPanels", {
-                auxiliarySchema: {
-                    // specify augmented container template for panels
-                    template: "../html/SeparatedPanel.html",
-
-                    transcripts: {
-                        type: "fluid.videoPlayer.transcripts.display",
-                        panel: {
-                            type: "fluid.videoPlayer.panel.transcriptsSettings",
-                            container: ".flc-prefsEditor-transcripts-settings",
-                            template: "../html/MediaPanelTemplate.html",
-                            message: "../messages/transcripts.json"
-                        }
-                    }
-                }
-            });
-            var prefsEditor = fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
-                build: {
-                    gradeNames:  ["fluid.prefs.auxSchema.starter", "vp.auxSchema.extraPanels"],
-                    primarySchema: fluid.videoPlayer.primarySchema
-                },
-                prefsEditor: {
-                    tocTemplate: "../lib/infusion/src/components/tableOfContents/html/TableOfContents.html",
-                    templatePrefix: "../lib/infusion/src/framework/preferences/html/",
-                    messagePrefix: "../lib/infusion/src/framework/preferences/messages/",
-                    components: {
-                        prefsEditorLoader: {
-                            options: {
-                                iframeRenderer: {
-                                    markupProps: {
-                                        src: "../html/SeparatedPanelPrefsEditorFrame.html"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
+            fluid.videoPlayer.prefsEditorSetup("../lib/infusion/src/components/tableOfContents/html/TableOfContents.html",
+                "../lib/infusion/src/framework/preferences/html/",
+                "../lib/infusion/src/framework/preferences/messages/",
+                "../html/SeparatedPanelPrefsEditorFrame.html");
             var vpOptions = {
                 gradeNames: ["fluid.videoPlayer.enhancerBinder"],
                 video: {

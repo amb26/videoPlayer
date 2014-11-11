@@ -21,6 +21,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.staticEnvironment.vpTest = fluid.typeTag("fluid.tests.videoPlayer");
 
+    fluid.defaults("vp.auxSchema.extraPanels", {
+        auxiliarySchema: {
+            // specify augmented container template for panels
+            template: "../../html/SeparatedPanel.html"
+        }
+    });
     /*******************************************************************************
      * set up test environment
      *******************************************************************************/
@@ -29,6 +35,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         funcName: "fluid.tempStore"
     });
 
+/*
     fluid.demands("templateLoader", ["fluid.prefs.separatedPanel", "fluid.tests.videoPlayer"], {
         options: {
             templates: {
@@ -55,6 +62,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
+*/
 
     var vpEventsOpts = {
         listeners: {
@@ -76,8 +84,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: ".flc-prefsEditor",
                 options: {
                     gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-                    templatePrefix: "../../lib/infusion/framework/preferences/html/",
-                    messagePrefix: "../../lib/infusion/framework/preferences/messages/",
+                    templatePrefix: "../../lib/infusion/src/framework/preferences/html/",
+                    messagePrefix: "../../lib/infusion/src/framework/preferences/messages/",
                     templateLoader: {
                         gradeNames: ["fluid.videoPlayer.mediaPanelTemplateLoader", "fluid.prefs.starterTemplateLoader"]
                     },
@@ -221,12 +229,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tests.testMedia("captions", ".videoPlayer-test-captions");
     }
 
+    fluid.videoPlayer.prefsEditorSetup("../../lib/infusion/src/components/tableOfContents/html/TableOfContents.html",
+        "../../lib/infusion/src/framework/preferences/html/",
+        "../../lib/infusion/src/framework/preferences/messages/",
+        "../../html/SeparatedPanelPrefsEditorFrame.html");
+/*
     $(document).ready(function () {
+
         fluid.globalSettingsStore();
         fluid.pageEnhancer({
             uiEnhancer: {
                 gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.videoPlayer.vpRelay"],
-                tocTemplate: "../lib/infusion/components/tableOfContents/html/TableOfContents.html",
+                tocTemplate: "../../lib/infusion/src/components/tableOfContents/html/TableOfContents.html",
                 classnameMap: {
                     theme: {
                         "default": null
@@ -235,5 +249,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         });
     });
+*/
 
 })(jQuery);

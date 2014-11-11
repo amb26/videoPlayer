@@ -19,7 +19,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 (function ($) {
     fluid.staticEnvironment.vpTest = fluid.typeTag("fluid.tests.videoPlayer");
 
-    fluid.globalSettingsStore();
+    /* Set up the Prefs Editor to launch when the page is ready */
+    fluid.defaults("vp.auxSchema.extraPanels", {
+        auxiliarySchema: {
+            // specify augmented container template for panels
+            template: "../../html/SeparatedPanel.html"
+        }
+    });
+    fluid.videoPlayer.prefsEditorSetup("../../lib/infusion/src/components/tableOfContents/html/TableOfContents.html",
+        "../../lib/infusion/src/framework/preferences/html/",
+        "../../lib/infusion/src/framework/preferences/messages/",
+        "../../html/SeparatedPanelPrefsEditorFrame.html");
+
 
     fluid.defaults("fluid.tests.videoPlayerEnhancer", {
         gradeNames: ["fluid.test.testEnvironment", "autoInit"],
@@ -143,17 +154,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     $(document).ready(function () {
-        fluid.pageEnhancer({
-            uiEnhancer: {
-                gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.videoPlayer.vpRelay"],
-                tocTemplate: "../lib/infusion/components/tableOfContents/html/TableOfContents.html",
-                classnameMap: {
-                    theme: {
-                        "default": null
-                    }
-                }
-            }
-        });
         fluid.test.runTests([
             "fluid.tests.videoPlayerEnhancer"
         ]);

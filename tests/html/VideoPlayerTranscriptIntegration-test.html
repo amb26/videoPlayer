@@ -21,6 +21,7 @@
         <script type="text/javascript" src="../../js/VideoPlayer_intervalEventsConductor.js"></script>
         <script type="text/javascript" src="../../js/HTML5-backcompat.js"></script>
         <script type="text/javascript" src="../../js/VideoPlayer_prefsEditor.js"></script>
+        <script type="text/javascript" src="../../demos/js/prefsEditor.js"></script>
 
         <!--  jqUnit test framework js files -->
         <script type="text/javascript" src="../lib/qunit/js/qunit.js"></script>
@@ -37,22 +38,20 @@
 
     </head>
     <body id="body">
-        <script>
-            fluid.globalSettingsStore();
-            fluid.pageEnhancer({
-                uiEnhancer: {
-                    gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.videoPlayer.vpRelay"],
-                    tocTemplate: "../../lib/infusion/components/tableOfContents/html/TableOfContents.html"
-                }
-            });
-        </script>
 
-        <div class="flc-prefsEditor fl-prefsEditor-separatedPanel">
-            <div class="flc-slidingPanel-panel flc-prefsEditor-iframe"></div>
-            <div class="fl-panelBar">
-                <button class="flc-slidingPanel-toggleButton fl-toggleButton">Show/Hide</button>
+        <!-- Markup for PrefsEditor  -->
+        <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
+            <!-- This is the div that will contain the Preference Editor component -->
+            <div class="flc-slidingPanel-panel flc-prefsEditor-iframe gpii-feedbackDemo-prefsEditor-slidingPanel"></div>
+            <!-- This div is for the sliding panel that shows and hides the Preference Editor controls -->
+            <div class="fl-panelBar row">
+                <span class="fl-prefsEditor-buttons">
+                    <button id="reset" class="flc-prefsEditor-reset fl-prefsEditor-reset"><span class="fl-icon-undo"></span> Reset</button>
+                    <button id="show-hide" class="flc-slidingPanel-toggleButton fl-prefsEditor-showHide"> Show/Hide</button>
+                </span>
             </div>
         </div>
+        <!-- End markup for PrefsEditor  -->
         <div class="flc-toc-tocContainer"> </div>
 
       <!-- This is the markup that jqUnit will look for when running tests and displaying the results -->

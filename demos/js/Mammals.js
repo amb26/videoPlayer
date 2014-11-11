@@ -18,46 +18,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
     $(document).ready(function () {
-        fluid.globalSettingsStore();
-        fluid.pageEnhancer({
-            uiEnhancer: {
-                gradeNames: ["fluid.uiEnhancer.starterEnactors", "fluid.videoPlayer.vpRelay"],
-                tocTemplate: "../lib/infusion/components/tableOfContents/html/TableOfContents.html",
-                classnameMap: {
-                    theme: {
-                        "default": "fl-videoPlayer-theme"
-                    }
-                }
-            }
-        });
-
-        var prefsEditor = fluid.prefs.separatedPanel(".flc-prefsEditor", {
-            gradeNames: ["fluid.prefs.transformDefaultPanelsOptions"],
-            templatePrefix: "../lib/infusion/framework/preferences/html/",
-            messagePrefix: "../lib/infusion/framework/preferences/messages/",
-            templateLoader: {
-                gradeNames: ["fluid.videoPlayer.mediaPanelTemplateLoader", "fluid.prefs.starterTemplateLoader"]
-            },
-            messageLoader: {
-                gradeNames: ["fluid.videoPlayer.mediaPanelMessageLoader", "fluid.prefs.starterMessageLoader"]
-            },
-            prefsEditor: {
-                gradeNames: ["fluid.videoPlayer.mediaPanels", "fluid.prefs.starterPanels", "fluid.prefs.rootModel.starter", "fluid.prefs.uiEnhancerRelay"],
-                members: {
-                    rootModel: {
-                        captions: false,
-                        captionLanguage: "en",
-                        transcripts: false,
-                        transcriptLanguage: "en"
-                    }
-                }
-            },
-            slidingPanel: {
-                strings: {
-                    showText: "+ Show Learner Options"
-                }
-            }
-        });
+        fluid.videoPlayer.prefsEditorSetup("../lib/infusion/src/components/tableOfContents/html/TableOfContents.html",
+            "../lib/infusion/src/framework/preferences/html/",
+            "../lib/infusion/src/framework/preferences/messages/",
+            "../html/SeparatedPanelPrefsEditorFrame.html");
 
         var earlyVideoPlayerInstances = [ {
             container: ".mammals-video",
