@@ -650,7 +650,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *********************************************************************************/
         
     fluid.defaults("fluid.videoPlayer.eventBinder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"]
+        gradeNames: ["fluid.modelRelayComponent", "autoInit"]
     });
 
     /*******************************************************************

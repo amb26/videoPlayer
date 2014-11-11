@@ -49,10 +49,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         $(document).ready (function () {
             fluid.videoPlayer.prefsEditor = fluid.prefs.create(".flc-prefsEditor-separatedPanel", {
                 build: {
-                    gradeNames:  ["fluid.prefs.auxSchema.starter", "vp.auxSchema.extraPanels"],
-                    primarySchema: fluid.videoPlayer.primarySchema
+                    gradeNames:  ["fluid.prefs.auxSchema.starter"/*, "vp.auxSchema.extraPanels"*/],
+                    primarySchema: fluid.videoPlayer.primarySchema,
+                    auxiliarySchema: {
+                    }
                 },
                 prefsEditor: {
+                    distributeOptions: {
+                        source: "{that}.options.tocTemplate",
+                        target: "{that uiEnhancer}.options.tocTemplate"
+                    },
+                    enhancer: {
+                        distributeOptions: {
+                            source: "{that}.options.tocTemplate",
+                            target: "{that > fluid.prefs.enactor.tableOfContents}.options.tocTemplate"
+                        }
+                    },
                     tocTemplate: tocTemplate,
                     templatePrefix: templatePath,
                     messagePrefix: messagePath,
@@ -69,6 +81,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             });
+
+
         });
     };
 

@@ -3,24 +3,18 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <title>Video Player Demo</title>
-        <link rel="stylesheet" type="text/css" href="../lib/infusion/src/framework/fss/css/fss-layout.css" />
-        <link rel="stylesheet" type="text/css" href="../lib/infusion/src/framework/fss/css/fss-text.css" />
-        <link rel="stylesheet" type="text/css" href="../lib/infusion/src/framework/preferences/css/fss/fss-theme-bw-prefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="../lib/infusion/src/framework/preferences/css/fss/fss-theme-wb-prefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="../lib/infusion/src/framework/preferences/css/fss/fss-theme-by-prefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="../lib/infusion/src/framework/preferences/css/fss/fss-theme-yb-prefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="../lib/infusion/src/framework/preferences/css/fss/fss-theme-lgdg-prefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="../lib/infusion/src/framework/preferences/css/fss/fss-theme-dglg-prefsEditor.css" />
-        <link rel="stylesheet" type="text/css" href="../lib/infusion/src/framework/preferences/css/fss/fss-text-prefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../lib/infusion/src/lib/normalize/css/normalize.css" />
+        <link rel="stylesheet" type="text/css" href="../lib/infusion/src/framework/core/css/fluid.css" />
+        <link rel="stylesheet" type="text/css" href="../lib/infusion/src/framework/preferences/css/Enactors.css" />
+        <link rel="stylesheet" type="text/css" href="../lib/infusion/src/framework/preferences/css/PrefsEditor.css" />
         <link rel="stylesheet" type="text/css" href="../lib/infusion/src/framework/preferences/css/SeparatedPanelPrefsEditor.css" />
+        <link rel="stylesheet" type="text/css" href="../lib/infusion/src/components/overviewPanel/css/OverviewPanel.css" />
 
         <link type="text/css" href="../lib/jquery-ui/css/ui-lightness/jquery-ui-1.8.14.custom.css" rel="stylesheet" />
         <link type="text/css" href="../css/VideoPlayer.css" rel="stylesheet" />
         <link type="text/css" href="../lib/captionator/css/captions.css" rel="stylesheet" />
         <link type="text/css" href="css/PrefsEditor.css" rel="stylesheet" />
-        <!--[if lt IE 9]>
-            <link type="text/css" href="../css/ltie9.css" rel="stylesheet" />
-        <![endif]-->
+        <link type="text/css" href="css/VideoPlayerDemo.css" rel="stylesheet" />
 
         <!-- Fluid and jQuery Dependencies -->
         <script type="text/javascript" src="../lib/infusion/infusion-custom.js"></script>
@@ -48,6 +42,7 @@
 
         </head>
     <body>
+        <div class="flc-overviewPanel fl-overviewPanel-container"></div>
         <!-- Markup for PrefsEditor  -->
         <div class="flc-prefsEditor-separatedPanel fl-prefsEditor-separatedPanel">
             <!-- This is the div that will contain the Preference Editor component -->
@@ -62,78 +57,113 @@
         </div>
         <!-- End markup for PrefsEditor  -->
 
-        <div class="flc-toc-tocContainer"> </div>
+        <main>
+            <div class="flc-toc-tocContainer"> </div>
+    
+            <h1>Infusion HTML 5 Video Player</h1>
+    
+            <div class="videoPlayer fl-videoPlayer">
+            </div>
+    
+            <script>
 
-        <h1>Infusion HTML 5 Video Player</h1>
-
-        <div class="videoPlayer fl-videoPlayer">
-        </div>
-
-        <script>
-            fluid.videoPlayer.prefsEditorSetup("../lib/infusion/src/components/tableOfContents/html/TableOfContents.html",
-                "../lib/infusion/src/framework/preferences/html/",
-                "../lib/infusion/src/framework/preferences/messages/",
-                "../html/SeparatedPanelPrefsEditorFrame.html");
-            var vpOptions = {
-                gradeNames: ["fluid.videoPlayer.enhancerBinder"],
-                video: {
-                    sources: [
-                        {
-                            src: "videos/ReorganizeFuture/ReorganizeFuture.mp4",
-                            type: "video/mp4"
-                        },
-                        {
-                            src: "videos/ReorganizeFuture/ReorganizeFuture.webm",
-                            type: "video/webm"
-/*
-                        },
-                        {
-                            src: "http://www.youtube.com/v/_VxQEPw1x9E",
-                            type: "video/youtube"
-*/
+                fluid.overviewPanel(".flc-overviewPanel", {
+                    resources: {
+                        template: {
+                            href: "html/overviewPanelTemplate.html"
                         }
-                    ],
-                    captions: [
-/*
-                        {
-                            src: "http://www.youtube.com/watch?v=_VxQEPw1x9E&language=en",
-                            type: "text/amarajson",
-                            srclang: "en",
-                            label: "English"
-                        },
-*/
-                        {
-                            src: "videos/ReorganizeFuture/ReorganizeFuture.fr.vtt",
-                            type: "text/vtt",
-                            srclang: "fr",
-                            label: "French"
-                        }
-                    ],
-                    transcripts: [
-/*
-                        {
-                            // TO TEST the transcript processing of Universal Subtitles files for transcripts,
-                            // substititute the following two lines
-                            src: "http://www.youtube.com/watch?v=_VxQEPw1x9E&language=en",
-                            type: "text/amarajson",
+                    },
+                    strings: {
+                        componentName: "Video Player",
+                        feedbackText: "Have a comment?",
+                        feedbackLinkText: "Email us",
+                        titleBegin: "An",
+                        titleLinkText: "Video Player",
+                        titleEnd: "demo",
+                        componentName: "The FLOE Video Player",
+                        infusionCodeLinkText: "get the Video Player",
+                    },
+                    markup: {
+                        description: "The Video Player is a fully accessible HTML 5 media player.",
+                        instructions: "<p>Go for it... play with the Player!</p>"
+                    },
+                    links: {
+                        titleLink: "http://wiki.fluidproject.org/display/fluid/%28Floe%29+Video+Player",
+                        demoCodeLink: "https://github.com/fluid-project/videoPlayer/demos/VideoPlayer.html",
+                        infusionCodeLink: "https://github.com/fluid-project/videoPlayer",
+                        designLink: "http://wiki.fluidproject.org/pages/viewpage.action?pageId=29950286",
+                        feedbackLink: "mailto:infusion-users@fluidproject.org?subject=Video Player feedback"
+                    }
+                });
 
-                            //src: "videos/ReorganizeFuture/ReorganizeFuture.transcripts.en.json",
-                            //type: "JSONcc",
-                            srclang: "en",
-                            label: "English"
-                        },
-*/
-                        {
-                            src: "videos/ReorganizeFuture/ReorganizeFuture.transcripts.fr.json",
-                            type: "JSONcc",
-                            srclang: "fr",
-                            label: "French"
-                        }
-                    ]
-                },
-                videoTitle: "A chance to reorganize our future?"
-            };
-            fluid.videoPlayer(".videoPlayer", vpOptions);
-        </script>
+                fluid.videoPlayer.prefsEditorSetup(
+                    "../lib/infusion/src/components/tableOfContents/html/TableOfContents.html",
+                    "../lib/infusion/src/framework/preferences/html/",
+                    "../lib/infusion/src/framework/preferences/messages/",
+                    "../html/SeparatedPanelPrefsEditorFrame.html"
+                );
+                var vpOptions = {
+                    gradeNames: ["fluid.videoPlayer.enhancerBinder"],
+                    video: {
+                        sources: [
+                            {
+                                src: "videos/ReorganizeFuture/ReorganizeFuture.mp4",
+                                type: "video/mp4"
+                            },
+                            {
+                                src: "videos/ReorganizeFuture/ReorganizeFuture.webm",
+                                type: "video/webm"
+    /*
+                            },
+                            {
+                                src: "http://www.youtube.com/v/_VxQEPw1x9E",
+                                type: "video/youtube"
+    */
+                            }
+                        ],
+                        captions: [
+    /*
+                            {
+                                src: "http://www.youtube.com/watch?v=_VxQEPw1x9E&language=en",
+                                type: "text/amarajson",
+                                srclang: "en",
+                                label: "English"
+                            },
+    */
+                            {
+                                src: "videos/ReorganizeFuture/ReorganizeFuture.fr.vtt",
+                                type: "text/vtt",
+                                srclang: "fr",
+                                label: "French"
+                            }
+                        ],
+                        transcripts: [
+    /*
+                            {
+                                // TO TEST the transcript processing of Universal Subtitles files for transcripts,
+                                // substititute the following two lines
+                                src: "http://www.youtube.com/watch?v=_VxQEPw1x9E&language=en",
+                                type: "text/amarajson",
+    
+                                //src: "videos/ReorganizeFuture/ReorganizeFuture.transcripts.en.json",
+                                //type: "JSONcc",
+                                srclang: "en",
+                                label: "English"
+                            },
+    */
+                            {
+                                src: "videos/ReorganizeFuture/ReorganizeFuture.transcripts.fr.json",
+                                type: "JSONcc",
+                                srclang: "fr",
+                                label: "French"
+                            }
+                        ]
+                    },
+                    videoTitle: "A chance to reorganize our future?"
+                };
+                fluid.videoPlayer(".videoPlayer", vpOptions);
+
+            </script>
+        </main>
     </body>
 </html>

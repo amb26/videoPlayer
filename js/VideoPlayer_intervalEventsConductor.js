@@ -24,7 +24,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
      *********************************************************************************/
     
     fluid.defaults("fluid.videoPlayer.intervalEventsConductor", {
-        gradeNames: ["fluid.eventedComponent", "fluid.modelRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
         events: {
             onTimeUpdate: null,
             onIntervalChange: null,

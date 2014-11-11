@@ -831,7 +831,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Evented empty subcomponent: an empty subcomponent that fires an onReady event
      */
     fluid.defaults("fluid.emptyEventedSubcomponent", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
         events: {
             onReady: {
                 events: {

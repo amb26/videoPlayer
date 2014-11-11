@@ -17,9 +17,96 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 (function ($) {
 
+    fluid.registerNamespace("fluid.videoPlayer.panel.mediaSettings");
+
+    fluid.defaults("fluid.videoPlayer.panel.transcriptsShow", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "fluid.videoPlayer.transcripts.display": {
+                "model.displayTranscripts": "default"
+            }
+        },
+        selectors: {
+            show: ".flc-videoPlayer-media",
+            choiceLabel: ".flc-videoPlayer-media-choice-label"
+        },
+        styles: {
+            icon: "fl-icon"
+        },
+        produceTree: "fluid.videoPlayer.panel.mediaSettings.produceShowTree",
+        members: {
+            mediaType: "transcripts"
+        }
+    });
+    fluid.videoPlayer.panel.mediaSettings.produceShowTree = function (that) {
+        return {
+            choiceLabel: {messagekey: that.mediaType + "ChoiceLabel"},
+            icon: {
+                decorators: [{
+                    type: "addClass",
+                    classes: that.options.styles.icon
+                }]
+            },
+            show: "${displayTranscripts}"
+        };
+    };
+
+    fluid.defaults("fluid.videoPlayer.panel.transcriptsLanguage", {
+        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        preferenceMap: {
+            "fluid.videoPlayer.transcripts.language": {
+                "model.transcriptsLanguage": "default"
+            }
+        },
+        selectors: {
+            language: ".flc-videoPlayer-media-language"
+        },
+        strings: {
+            language: ["English", "French"]
+        },
+        controlValues: {
+            language: ["en", "fr"]
+        },
+        produceTree: "fluid.videoPlayer.panel.mediaSettings.produceLanguageTree"
+    });
+    fluid.videoPlayer.panel.mediaSettings.produceLanguageTree = function (that) {
+        return {
+            language: {
+                optionnames: "${{that}.options.strings.language}",
+                optionlist: "${{that}.options.controlValues.language}",
+                selection: "${language}",
+                decorators: [{
+                    type: "jQuery",
+                    func: "prop",
+                    args: ["disabled", !that.model.show]
+                }]
+            }
+        };
+    };
+
+    fluid.defaults("fluid.videoPlayer.panel.transcriptsSettings", {
+        gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
+        selectors: {
+            label: ".flc-videoPlayer-media-label"
+        },
+        protoTree: {
+            label: {messagekey: "transcriptsLabel"}
+        }
+    });
+
+
+
+
+
+
+
+
+
+
     /**
      * Shared grade for media settings panels
      */
+/*
     fluid.defaults("fluid.videoPlayer.panel.mediaSettings", {
         gradeNames: ["fluid.prefs.panel", "autoInit"],
         model: {
@@ -71,6 +158,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         };
     };
+*/
 
     fluid.videoPlayer.panel.mediaSettings.toggleLanguageOnShow = function (that) {
         that.applier.modelChanged.addListener("show", function (newModel, oldModel, request) {
@@ -81,6 +169,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     /**
      * Captions settings panel.
      */
+/*
     fluid.defaults("fluid.videoPlayer.panel.captionsSettings", {
         gradeNames: ["fluid.videoPlayer.panel.mediaSettings", "autoInit"],
         preferenceMap: {
@@ -101,9 +190,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             mediaType: "captions"
         }
     });
+*/
     /**
      * Transcripts settings panel.
      */
+/*
     fluid.defaults("fluid.videoPlayer.panel.transcriptsSettings", {
         gradeNames: ["fluid.videoPlayer.panel.mediaSettings", "autoInit"],
         preferenceMap: {
@@ -124,6 +215,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             mediaType: "transcripts"
         }
     });
+*/
 
 
 /*

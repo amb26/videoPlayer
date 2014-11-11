@@ -410,7 +410,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      **************************************************************************************/
 
     fluid.defaults("fluid.videoPlayer.languageControls.eventBinder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
         listeners: {
             "{button}.events.onPress": "{menu}.toggleView"
         }
