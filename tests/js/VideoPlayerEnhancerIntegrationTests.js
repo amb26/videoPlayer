@@ -10,13 +10,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  
  */
 
-// Declare dependencies
 /*global fluid, jqUnit, jQuery*/
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 (function ($) {
+    "use strict";
     fluid.staticEnvironment.vpTest = fluid.typeTag("fluid.tests.videoPlayer");
 
     /* Set up the Prefs Editor to launch when the page is ready */
@@ -33,7 +30,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 
     fluid.defaults("fluid.tests.videoPlayerEnhancer", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             videoPlayer: {
                 type: "fluid.videoPlayer",
@@ -46,7 +43,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.tests.assert = function (that) {
+    fluid.tests.assert = function () {
         jqUnit.assert("VideoPlayer ready");
     };
 
@@ -55,13 +52,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.tests.checkPlayerModel = function (path, value) {
-        return function (newModel, oldModel, requests) {
+        return function (newModel) {
             jqUnit.assertEquals("player model at " + path + " should be " + value, value, fluid.get(newModel, path));
         };
     };
 
     fluid.defaults("fluid.tests.videoPlayerEnhancerTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Setup",
             tests: [{

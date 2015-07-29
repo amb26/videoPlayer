@@ -9,17 +9,15 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /*global fluid, jqUnit, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid.registerNamespace("fluid.testUtils");
 
 /* A number of utility functions for testing things common among many controls */
 
 (function ($) {
+    "use strict";
+    
     fluid.testUtils.baseOpts = {
         gradeNames: ["fluid.videoPlayer.enhancerBinder"],
         video: {
@@ -138,21 +136,16 @@ fluid.registerNamespace("fluid.testUtils");
                     testFn: the test function to run
     */
     fluid.testUtils.testCaseWithEnv = function (name, testCaseInfo, envFeatures, setupFn, teardownFn) {
-        var checkedOrg, staticOrg;
-        
         var moduleOpts = {
             setup: function () {
-                checkedOrg = fluid.copy(fluid.enhance.checked);
-                staticOrg = fluid.copy(fluid.staticEnvironment);
-                fluid.enhance.forgetAll();
-                fluid.testUtils.setStaticEnv(envFeatures);
+                // TODO: need to issue fluid.contextAware.forgetChecks for all checks we are interested in
+                fluid.contextAware.makeChecks(fluid.arrayToHash(envFeatures));
                 if (setupFn) {
                     setupFn();
                 }
             },
             teardown: function () {
-                fluid.enhance.checked = checkedOrg;
-                fluid.staticEnvironment = staticOrg;
+                fluid.contextAware.forgetChecks(envFeatures);
                 if (teardownFn) {
                     teardownFn();
                 }
@@ -164,14 +157,6 @@ fluid.registerNamespace("fluid.testUtils");
         $.each(testCaseInfo, function (index, testInfo) {
             var test = testInfo.async ? jqUnit.asyncTest : jqUnit.test;
             test(testInfo.desc, testInfo.testFn);
-        });
-    };
-
-    fluid.testUtils.setStaticEnv = function (features) {
-        fluid.each(features, function (feature) {
-            var check = {};
-            check[feature] = function () {return true;};
-            fluid.enhance.check(check);
         });
     };
 

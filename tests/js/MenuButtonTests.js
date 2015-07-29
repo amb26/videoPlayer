@@ -9,15 +9,12 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /*global fluid, jqUnit, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid.registerNamespace("fluid.tests");
 
 (function ($) {
+    "use strict";
     $(document).ready(function () {
 
         jqUnit.module("Menu Button Tests");
@@ -75,7 +72,7 @@ fluid.registerNamespace("fluid.tests");
         jqUnit.asyncTest("Language Menu: Default configuration", function () {
             var numLangs = baseMenuOpts.languages.length;
             jqUnit.expect(9);
-            var testMenu = fluid.tests.initMenu({
+            fluid.tests.initMenu({
                 listeners: {
                     onReady: function (that) {
                         var langList = that.locate("language");
@@ -119,17 +116,15 @@ fluid.registerNamespace("fluid.tests");
         });
 
         jqUnit.asyncTest("Language Menu: Custom 'show/hide' option strings", function () {
-            var numLangs = baseMenuOpts.languages.length;
             jqUnit.expect(2);
             var testStrings = {
                 showLanguage: "No one is talking",
                 hideLanguage: "Please stop all the talking!"
             };
-            var testMenu = fluid.tests.initMenu({
+            fluid.tests.initMenu({
                 strings: testStrings,
                 listeners: {
                     onReady: function (that) {
-                        var langList = that.locate("language");
                         jqUnit.assertEquals("Initially, 'show/hide' option should have the correct custom text", testStrings.showLanguage, that.locate("showHide").text());
                         that.activate(1);
                         jqUnit.assertEquals("Activating an item changes the 'show/hide' option text to the custom text", testStrings.hideLanguage, that.locate("showHide").text());
@@ -181,7 +176,7 @@ fluid.registerNamespace("fluid.tests");
 
         jqUnit.asyncTest("Language Controls: default functionality", function () {
             var numLangs = baseLanguageControlsOpts.languages.length;
-            var testControls = fluid.tests.initLangControls({
+            fluid.tests.initLangControls({
                 listeners: {
                     onReady: {
                         listener: function (that) {
@@ -233,7 +228,7 @@ fluid.registerNamespace("fluid.tests");
 
         jqUnit.asyncTest("Language Controls: ARIA", function () {
             jqUnit.expect(8);
-            var testControls = fluid.tests.initLangControls({
+            fluid.tests.initLangControls({
                 listeners: {
                     onReady: {
                         listener: function (that) {
@@ -252,7 +247,7 @@ fluid.registerNamespace("fluid.tests");
 
                             that.menu.hideMenu();
                             jqUnit.assertEquals("After hide, menu should be aria-hidden", "true", that.menu.container.attr("aria-hidden"));
-                            jqUnit.start();                            
+                            jqUnit.start();
 
                         }
                     }

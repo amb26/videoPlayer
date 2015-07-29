@@ -12,11 +12,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 /*global jQuery, fluid*/
 
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
-
 (function ($) {
+    "use strict";
+
     $(document).ready(function () {
         fluid.videoPlayer.prefsEditorSetup("../lib/infusion/src/components/tableOfContents/html/TableOfContents.html",
             "../lib/infusion/src/framework/preferences/html/",

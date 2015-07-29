@@ -10,13 +10,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 */
 
-// Declare dependencies
 /*global fluid, jqUnit, jQuery*/
 
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 (function ($) {
+    "use strict";
     $(document).ready(function () {
 
         fluid.registerNamespace("fluid.tests.videoPlayer");
@@ -24,7 +21,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.module("Video Player ARIA Tests");
 
         fluid.tests.videoPlayer.checkAriaControlsAttr = function (controlsToTest) {
-            fluid.each(controlsToTest, function (spec, index) {
+            fluid.each(controlsToTest, function (spec) {
                 jqUnit.expect(2);
                 jqUnit.assertValue(spec.controlName + " should have aria-controls attribute", $(spec.control).attr("aria-controls"));
                 jqUnit.assertEquals(spec.controlName + " should aria-controls " + spec.controlledName,
@@ -36,13 +33,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var captionLangMenuSelector = ".flc-videoPlayer-captionControls-container .flc-menuButton-languageMenu";
         var transcriptLangMenuSelector = ".flc-videoPlayer-transcriptControls-container .flc-menuButton-languageMenu";
 
-        fluid.tests.videoPlayer.triggerTranscript = function (that) {
-console.log("triggering transcript");
+        fluid.tests.videoPlayer.triggerTranscript = function () {
             $(transcriptLangMenuSelector + " li:eq(0)").click();
         };
 
-        fluid.tests.videoPlayer.testAriaControlsAttrs = function (that) {
-console.log("testing aria");
+        fluid.tests.videoPlayer.testAriaControlsAttrs = function () {
             var controlsToTest = [{
                 controlName: "Transcript menu",
                 control: transcriptLangMenuSelector,

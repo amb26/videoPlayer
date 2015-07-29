@@ -13,10 +13,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 /*global jQuery, fluid*/
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 (function ($, fluid) {
+    "use strict";
 
     /**
      * controllers is a video controller containing a play button, a time scrubber, 
@@ -33,7 +31,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.locate("fullscreen").attr("disabled", !that.model.canPlay);
     };
 
-    fluid.videoPlayer.controllers.supportFullscreen = function () {
+    fluid.videoPlayer.doesSupportFullscreen = function () {
         var fullscreenFnNames = ["requestFullScreen", "mozRequestFullScreen", "webkitRequestFullScreen", "oRequestFullScreen", "msieRequestFullScreen"];
         
         return fluid.find(fullscreenFnNames, function (name) {
@@ -41,13 +39,30 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
     
-    fluid.enhance.check({
-        "fluid.browser.supportsFullScreen": "fluid.videoPlayer.controllers.supportFullscreen",
-        "fluid.browser.nativeVideoSupport": "fluid.browser.nativeVideoSupport"
+    fluid.contextAware.makeChecks({
+        "fluid.browser.supportsFullScreen": "fluid.videoPlayer.doesSupportFullscreen"
     });
 
-    fluid.defaults("fluid.videoPlayer.controllers", { 
-        gradeNames: ["fluid.viewRelayComponent", "autoInit", "{that}.getCaptionGrade", "{that}.getFullScreenGrade"],
+    fluid.defaults("fluid.videoPlayer.controllers", {
+        gradeNames: ["fluid.viewComponent", "fluid.contextAware"],
+        contextAwareness: {
+            captions: {
+                checks: {
+                    nativeVideo: {
+                        contextValue: "{fluid.browser.nativeVideoSupport}",
+                        gradeNames: "fluid.videoPlayer.controllers.captionControls"
+                    }
+                }
+            },
+            fullScreen: {
+                checks: {
+                    fullScreen: {
+                        contextValue: "{fluid.browser.supportsFullScreen}",
+                        gradeNames: "fluid.videoPlayer.controllers.fullScreenButton"
+                    }
+                }
+            }
+        },
         modelListeners: {
             canPlay: {
                 funcName: "fluid.videoPlayer.controllers.togglePlayDependentControls",
@@ -157,7 +172,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         pressed: "{controllers}.model.play"
                     },
                     listeners: {
-                        onAttach: "{controllers}.events.onPlayReady"
+                        onCreate: "{controllers}.events.onPlayReady" // TODO: was onAttach - verify
                     }
                 }
             },
@@ -226,15 +241,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         
         invokers: {
-            showHideScrubberHandle: { 
-                funcName: "fluid.videoPlayer.controllers.scrubber.showHideHandle", 
+            showHideScrubberHandle: {
+                funcName: "fluid.videoPlayer.controllers.scrubber.showHideHandle",
                 args: ["{scrubber}", "{arguments}.0.totalTime"]
-            },
-            getCaptionGrade: {
-                funcName: "fluid.videoPlayer.controllers.getCaptionGrade"
-            },
-            getFullScreenGrade: {
-                funcName: "fluid.videoPlayer.controllers.getFullScreenGrade"
             }
         },
         
@@ -254,7 +263,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.videoPlayer.controllers.fullScreenButton", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         components: {
             fullScreenButton: {
                 type: "fluid.toggleButton",
@@ -286,7 +295,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.videoPlayer.controllers.captionControls", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         components: {
             captionControls: {
                 type: "fluid.videoPlayer.languageControls",
@@ -321,14 +330,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     });
 
-    fluid.videoPlayer.controllers.getFullScreenGrade = function () {
-        return fluid.videoPlayer.getGrade("fluid.browser.supportsFullScreen", "fluid.videoPlayer.controllers.fullScreenButton");
-    };
-
-    fluid.videoPlayer.controllers.getCaptionGrade = function () {
-        return fluid.videoPlayer.getGrade("fluid.browser.nativeVideoSupport", "fluid.videoPlayer.controllers.captionControls");
-    };
-
     fluid.videoPlayer.controllers.loadTemplates = function (that) {
         var templates = that.options.templates;
         fluid.fetchResources(templates, function () {
@@ -348,54 +349,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     * scrubber: a slider to follow the progress *
     *           of the video                    *
     ********************************************/
-        
-    // TODO: Privacy is inherited. Consider making this public
-    //change the text of the selected time
-    var updateTime = function (that, element) {
-        var time = that.locate(element);
-        time.text(fluid.videoPlayer.formatTime(that.model[element]));
-    };
-
-    // TODO: Privacy is inherited. Consider making this public
-    var bindScrubberDOMEvents = function (that) {
-        // Bind the scrubbers slide event to change the video's time.
-        var scrubber = that.locate("scrubber");
-        scrubber.bind({
-            "slidestart": function (evt, ui) {
-                that.events.onStartScrub.fire(ui.value);
-            },
-            "slide": function (evt, ui) {
-                that.events.onScrub.fire(ui.value);
-            },
-            "slidestop": function (evt, ui) {
-                that.events.afterScrub.fire(ui.value);
-            }
-        });
-    };
-
-    // TODO: Privacy is inherited. Consider making this public
-    var createScrubberMarkup = function (that) {
-        var scrubber = that.locate("scrubber");
-        scrubber.slider({
-            unittext: "seconds",
-            range: "min",
-            disabled: true
-        });
-        
-        // TODO: This in inherited. Do we need to add aria to sliders ourselves?
-        that.locate("handle").attr({
-            "aria-label": that.options.strings.scrubber,
-            "aria-valuemin": 0,
-            "aria-valuemax": 0,
-            "aria-valuenow": 0,
-            "aria-valuetext": 0,
-            "role": "slider"
-        });
-        return scrubber;
-    };
 
     fluid.defaults("fluid.videoPlayer.controllers.scrubber", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.videoPlayer.showHide", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.videoPlayer.showHide"],
         model: {
             currentTime: 0,
             scrubTime: 0,
@@ -404,29 +360,37 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             canPlay: false,
             isShown: {}
         },
+        members: {
+            bufferCompleted: false // The flag that stops the buffer progress update once the video is fully buffered. TODO: See if this can/should be modelised
+        },
         modelListeners: {
             startTime: {
                 funcName: "fluid.videoPlayer.controllers.scrubber.updateMin",
-                args: ["{scrubber}"]
+                args: ["{scrubber}"],
+                excludeSource: "init"
             },
             totalTime: [{
                 funcName: "fluid.videoPlayer.controllers.scrubber.updateMax",
-                args: ["{scrubber}"]
-            },{
-                funcName: "fluid.videoPlayer.controllers.scrubber.showHideHandle", 
+                args: ["{scrubber}"],
+                excludeSource: "init"
+            }, {
+                funcName: "fluid.videoPlayer.controllers.scrubber.showHideHandle",
                 args: ["{scrubber}", "{arguments}.0.value"]
             }],
             currentTime: {
                 funcName: "fluid.videoPlayer.controllers.scrubber.updateCurrent",
-                args: ["{scrubber}"]
+                args: ["{scrubber}"],
+                excludeSource: "init"
             },
             bufferedEnd: {
                 funcName: "fluid.videoPlayer.controllers.scrubber.updateBuffered",
-                args: ["{fluid.videoPlayer.controllers.scrubber}"]
+                args: ["{fluid.videoPlayer.controllers.scrubber}"],
+                excludeSource: "init"
             },
             canPlay: {
                 funcName: "fluid.videoPlayer.controllers.scrubber.syncState",
-                args: ["{scrubber}"]
+                args: ["{scrubber}"],
+                excludeSource: "init"
             }
         },
         events: {
@@ -496,30 +460,66 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     initiallyHidden: false,
                     minWidth: 0,
                     listeners: {
-                        onAttach: "{scrubber}.events.onProgressAttached"
+                        onCreate: "{scrubber}.events.onProgressAttached" // TODO: was onAttach - verify
                     }
                 }
             }
         }
     });
 
-    // The flag that stops the buffer progress update once the video is fully buffered.
-    var bufferCompleted = false;
+    fluid.videoPlayer.controllers.scrubber.updateTime = function (that, element) {
+        var time = that.locate(element);
+        time.text(fluid.videoPlayer.formatTime(that.model[element]));
+    };
+
+    fluid.videoPlayer.controllers.scrubber.bindScrubberDOMEvents = function (that) {
+        // Bind the scrubbers slide event to change the video's time.
+        var scrubber = that.locate("scrubber");
+        scrubber.bind({
+            "slidestart": function (evt, ui) {
+                that.events.onStartScrub.fire(ui.value);
+            },
+            "slide": function (evt, ui) {
+                that.events.onScrub.fire(ui.value);
+            },
+            "slidestop": function (evt, ui) {
+                that.events.afterScrub.fire(ui.value);
+            }
+        });
+    };
+
+    fluid.videoPlayer.controllers.scrubber.createScrubberMarkup = function (that) {
+        var scrubber = that.locate("scrubber");
+        scrubber.slider({
+            unittext: "seconds",
+            range: "min",
+            disabled: true
+        });
+        
+        // TODO: This in inherited. Do we need to add aria to sliders ourselves?
+        that.locate("handle").attr({
+            "aria-label": that.options.strings.scrubber,
+            "aria-valuemin": 0,
+            "aria-valuemax": 0,
+            "aria-valuenow": 0,
+            "aria-valuetext": 0,
+            "role": "slider"
+        });
+        return scrubber;
+    };
+
 
     fluid.videoPlayer.controllers.scrubber.updateBuffered = function (that) {
-        if (!that.modelRelay || that.modelRelay.__CURRENTLY_IN_EVALUATION__) {
-            return;
-        }
         var lastBufferedTime = that.model.bufferEnd;
         var totalTime = that.model.totalTime;
 
         // Turn on buffer progress update if the re-buffering is triggered, for instance, 
         // by rewinding back
         if (lastBufferedTime !== totalTime) {
-            bufferCompleted = false;
+            that.bufferCompleted = false;
         }
 
-        if (totalTime && lastBufferedTime && !bufferCompleted) {
+        if (totalTime && lastBufferedTime && !that.bufferCompleted) {
             var percent = Math.round(lastBufferedTime / totalTime * 100);
             
             // Explicitly setting the width of .flc-progress-bar is a work-around for the Chrome/IE9 issue
@@ -529,15 +529,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
             // Stops the buffer progress from being kept updated once the progress reaches 100%
             if (lastBufferedTime === totalTime) {
-                bufferCompleted = true;
+                that.bufferCompleted = true;
             }
         }
     };
 
     fluid.videoPlayer.controllers.scrubber.updateMin = function (that) {
-        if (!that.modelRelay || that.modelRelay.__CURRENTLY_IN_EVALUATION__) {
-            return;
-        }
         var startTime = that.model.startTime || 0;
         var scrubber = that.locate("scrubber");
         scrubber.slider("option", "min", startTime + that.model.currentTime);
@@ -547,10 +544,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.videoPlayer.controllers.scrubber.updateMax = function (that) {
-        if (!that.modelRelay || that.modelRelay.__CURRENTLY_IN_EVALUATION__) {
-            return;
-        }
-        updateTime(that, "totalTime");
+        fluid.videoPlayer.controllers.scrubber.updateTime(that, "totalTime");
         var scrubber = that.locate("scrubber");
         scrubber.slider("option", "max", that.model.totalTime);
         that.locate("handle").attr({
@@ -559,10 +553,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.videoPlayer.controllers.scrubber.updateCurrent = function (that) {
-        if (!that.modelRelay || that.modelRelay.__CURRENTLY_IN_EVALUATION__) {
-            return;
-        }
-        updateTime(that, "currentTime");
+        fluid.videoPlayer.controllers.scrubber.updateTime(that, "currentTime");
         var scrubber = that.locate("scrubber");
         scrubber.slider("value", that.model.currentTime);
         that.locate("handle").attr({
@@ -572,9 +563,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.videoPlayer.controllers.scrubber.syncState = function (that) {
-        if (!that.modelRelay || that.modelRelay.__CURRENTLY_IN_EVALUATION__) {
-            return;
-        }
         var scrubber = that.locate("scrubber");
         if (that.model.canPlay === true) {
             scrubber.slider("enable");
@@ -595,8 +583,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.videoPlayer.controllers.scrubber.init = function (that) {
-        createScrubberMarkup(that);
-        bindScrubberDOMEvents(that);
+        fluid.videoPlayer.controllers.scrubber.createScrubberMarkup(that);
+        fluid.videoPlayer.controllers.scrubber.bindScrubberDOMEvents(that);
         that.refresh();
         that.events.afterInit.fire();
     };
@@ -606,7 +594,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     *           To control the volume                       *
     *********************************************************/
     fluid.defaults("fluid.videoPlayer.controllers.volumeControls", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         model: {
             muted: false,
             volume: 50,
@@ -616,18 +604,22 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         modelListeners: {
             volume: [{
                 funcName: "fluid.videoPlayer.controllers.volumeControls.updateMuteStatus",
-                args: ["{volumeControls}", "{change}.value", "{change}.oldValue", "{change}"]
+                args: ["{volumeControls}", "{change}.value", "{change}.oldValue", "{change}"],
+                excludeSource: "init"
             }, {
                 funcName: "fluid.videoPlayer.controllers.volumeControls.updateSlider",
-                args: ["{volumeControls}", "{change}.value", "{change}.oldValue"]
+                args: ["{volumeControls}", "{change}.value", "{change}.oldValue"],
+                excludeSource: "init"
             }],
             canPlay: {
                 funcName: "fluid.videoPlayer.controllers.volumeControls.enableMuteButton",
-                args: "{volumeControls}"
+                args: "{volumeControls}",
+                excludeSource: "init"
             },
             muted: {
                 funcName: "fluid.videoPlayer.controllers.volumeControls.handleMute",
-                args: ["{volumeControls}", "{change}.value", "{change}.oldValue", "{change}"]
+                args: ["{volumeControls}", "{change}.value", "{change}.oldValue", "{change}"],
+                excludeSource: "init"
             }
         },
         events: {
@@ -670,8 +662,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             updateSlider: {
                 funcName: "fluid.videoPlayer.controllers.volumeControls.updateSlider",
                 args: ["{volumeControls}"]
-            },
-            
+            }
         },
         components: {
             muteButton: {
@@ -700,17 +691,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     listeners: {
                         onCreate: "{volumeControls}.events.muteButtonReady"
-                    } 
+                    }
                 }
             }
         }
     });
     
-    fluid.videoPlayer.controllers.volumeControls.updateMuteStatus = function (that, newVolume, oldVolume, change) {
-        if (that.modelRelay.__CURRENTLY_IN_EVALUATION__) {
-            // skip the initial transaction
-            return;
-        }
+    fluid.videoPlayer.controllers.volumeControls.updateMuteStatus = function (that, newVolume, oldVolume) {
         if (that.model.volume === 0) {
             that.oldVolume = oldVolume;
             that.applier.change("muted", true);
@@ -723,11 +710,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.locate("mute").attr("disabled", !that.model.canPlay);
     };
 
-    fluid.videoPlayer.controllers.volumeControls.handleMute = function (that, newMuteValue, oldMuteValue, change) {
-        if (that.modelRelay.__CURRENTLY_IN_EVALUATION__) {
-            // skip the initial transaction
-            return;
-        }
+    fluid.videoPlayer.controllers.volumeControls.handleMute = function (that, newMuteValue) {
         // See updateVolume method for converse logic
         if (that.model.volume > 0) {
             that.oldVolume = that.model.volume;
@@ -768,7 +751,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         fluid.tabindex(volumeControl, -1);
         fluid.tabindex(handle, -1);
 
-        fluid.activatable(that.container, function (evt) {
+        fluid.activatable(that.container, function () {
             that.muteButton.press();
         }, {
             additionalBindings: [{
@@ -790,7 +773,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         mute.attr("title", that.options.strings.instructions);
 
         // Bind the volume Control slide event to change the video's volume and its image.
-        var volumeControl = that.locate("volumeControl");
         var muteButton = that.muteButton;
         var tooltip = muteButton.tooltip;
 
@@ -813,11 +795,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     
 
-    fluid.videoPlayer.controllers.volumeControls.updateSlider = function (that, newValue, oldValue) {
-        if (that.modelRelay.__CURRENTLY_IN_EVALUATION__) {
-            // skip the initial transaction
-            return;
-        }
+    fluid.videoPlayer.controllers.volumeControls.updateSlider = function (that) {
         var volumeControl = that.locate("volumeControl");
         var volume = that.model.volume;
         volumeControl.slider("value", volume);
@@ -831,7 +809,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * Evented empty subcomponent: an empty subcomponent that fires an onReady event
      */
     fluid.defaults("fluid.emptyEventedSubcomponent", {
-        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         events: {
             onReady: {
                 events: {

@@ -10,21 +10,18 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  
  */
 
-// Declare dependencies
 /*global fluid, jqUnit, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid.registerNamespace("fluid.tests");
 
 (function ($) {
+    "use strict";
     $(document).ready(function () {
 
         jqUnit.module("Video Player Controls Integration Tests");
 
         jqUnit.asyncTest("Play button", function () {
-            var testPlayer = fluid.testUtils.initVideoPlayer("#videoPlayer", {
+            fluid.testUtils.initVideoPlayer("#videoPlayer", {
                 listeners: {
                     onReady: {
                         listener: function (controllers) {
@@ -41,7 +38,7 @@ fluid.registerNamespace("fluid.tests");
 
         jqUnit.asyncTest("Volume controls integration", function () {
             jqUnit.expect(4);
-            var testPlayer = fluid.testUtils.initVideoPlayer("#videoPlayer", {
+            fluid.testUtils.initVideoPlayer("#videoPlayer", {
                 listeners: {
                     onReady: {
                         listener: function (that) {
@@ -95,7 +92,7 @@ fluid.registerNamespace("fluid.tests");
 
         jqUnit.asyncTest("Show/hide scrubber handle", function () {
             jqUnit.expect(6);
-            var testPlayer = fluid.testUtils.initVideoPlayer("#videoPlayer", {
+            fluid.testUtils.initVideoPlayer("#videoPlayer", {
                 listeners: {
                     onReady: {
                         listener: function (controllers) {
@@ -138,7 +135,7 @@ fluid.registerNamespace("fluid.tests");
             testFn: function () {
                 jqUnit.expect(2);
 
-                var testPlayer = fluid.testUtils.initVideoPlayer("#videoPlayer", {
+                fluid.testUtils.initVideoPlayer("#videoPlayer", {
                     listeners: {
                         onReady: {
                             listener: function (controllers) {
@@ -156,7 +153,7 @@ fluid.registerNamespace("fluid.tests");
             async: true,
             testFn: function () {
                 jqUnit.expect(9);
-                var testPlayer = fluid.testUtils.initVideoPlayer("#videoPlayer", {
+                fluid.testUtils.initVideoPlayer("#videoPlayer", {
                     listeners: {
                         onReady: {
                             listener: function (controllers) {
@@ -213,7 +210,7 @@ fluid.registerNamespace("fluid.tests");
             testFn: function () {
                 jqUnit.expect(1);
 
-                var testPlayer = fluid.testUtils.initVideoPlayer("#videoPlayer", {
+                fluid.testUtils.initVideoPlayer("#videoPlayer", {
                     listeners: {
                         onReady: {
                             listener: function (controllers) {

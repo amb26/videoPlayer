@@ -11,12 +11,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, fluid, MediaElement, mejs*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*global jQuery, fluid, mejs*/
 
 (function ($, fluid) {
+    "use strict";
 
     /*********************************************************************************
      * Video Player Media                                                            *
@@ -25,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *********************************************************************************/
 
     fluid.defaults("fluid.videoPlayer.media", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         modelListeners: {
             play: "{media}.play",
             muted: "{media}.mute",
@@ -67,7 +65,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         path: "canPlay",
                         value: true
                     }
-                }, 
+                },
                 "{media}.refresh"
             ],
             onMediaElementLoadedMetadata: [{
@@ -105,7 +103,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             mute: { funcName: "fluid.videoPlayer.media.mute", args: ["{media}"] },
             refresh: { funcName: "fluid.videoPlayer.media.refresh", args: ["{media}"] },
             requestFullScreen: { funcName: "fluid.videoPlayer.media.requestFullScreen", args: ["{media}", "{arguments}.0"] },
-            cancelFullScreen: { funcName: "fluid.videoPlayer.media.cancelFullScreen", args: ["{media}"] },
+            cancelFullScreen: { funcName: "fluid.videoPlayer.media.cancelFullScreen", args: ["{media}"] }
         },
         mediaEventBindings: {
             canplay: "onMediaElementCanPlay",
@@ -152,7 +150,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         });
     };
 
-    fluid.videoPlayer.media.handleMediaVolumeChange = function (that, evt) {
+    fluid.videoPlayer.media.handleMediaVolumeChange = function (that) {
         var mediaVolume = that.model.mediaElementVideo.volume * 100;
         if (mediaVolume === that.model.volume) {
             return;
@@ -201,7 +199,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.videoPlayer.media.bindMediaDOMEvents = function (that) {
-        MediaElement(that.container[0], {success: function (mediaElementVideo) {
+        mejs.MediaElement(that.container[0], {success: function (mediaElementVideo) {
             that.model.mediaElementVideo = mediaElementVideo;
 
             // IE8 workaround to trigger the video initial loading. Otherwise, a blank is displayed at the video area

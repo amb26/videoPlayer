@@ -10,13 +10,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  
  */
 
-// Declare dependencies
 /*global fluid, jqUnit, jQuery*/
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 (function ($) {
+    "use strict";
+    
     $(document).ready(function () {
 
         jqUnit.module("Video Player Display Config Tests");
@@ -25,7 +23,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         fluid.registerNamespace("fluid.tests.showHide");
         fluid.defaults("fluid.videoPlayer.testShowHide", {
-            gradeNames: ["fluid.viewRelayComponent", "fluid.videoPlayer.showHide", "autoInit"],
+            gradeNames: ["fluid.viewComponent", "fluid.videoPlayer.showHide"],
             showHidePath: "scrubber",
             selectors: {
                 testContainer: showHideContainer
@@ -50,7 +48,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.test("hide", function () {
-            var that = fluid.videoPlayer.testShowHide(".flc-videoPlayer-showHide");
+            jqUnit.expect(3);
+            fluid.videoPlayer.testShowHide(".flc-videoPlayer-showHide");
         });
         
     });

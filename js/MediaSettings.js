@@ -9,18 +9,15 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, fluid*/
+/*global fluid*/
 
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
-
-(function ($) {
+(function () {
+    "use strict";
 
     fluid.registerNamespace("fluid.videoPlayer.panel.mediaSettings");
 
     fluid.defaults("fluid.videoPlayer.panel.transcriptsShow", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.videoPlayer.transcripts.display": {
                 "model.displayTranscripts": "default"
@@ -38,6 +35,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             mediaType: "transcripts"
         }
     });
+    
     fluid.videoPlayer.panel.mediaSettings.produceShowTree = function (that) {
         return {
             choiceLabel: {messagekey: that.mediaType + "ChoiceLabel"},
@@ -52,7 +50,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.videoPlayer.panel.transcriptsLanguage", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         preferenceMap: {
             "fluid.videoPlayer.transcripts.language": {
                 "model.transcriptsLanguage": "default"
@@ -69,6 +67,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         produceTree: "fluid.videoPlayer.panel.mediaSettings.produceLanguageTree"
     });
+    
     fluid.videoPlayer.panel.mediaSettings.produceLanguageTree = function (that) {
         return {
             language: {
@@ -85,7 +84,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.videoPlayer.panel.transcriptsSettings", {
-        gradeNames: ["fluid.prefs.compositePanel", "autoInit"],
+        gradeNames: ["fluid.prefs.compositePanel"],
         selectors: {
             label: ".flc-videoPlayer-media-label"
         },
@@ -108,7 +107,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      */
 /*
     fluid.defaults("fluid.videoPlayer.panel.mediaSettings", {
-        gradeNames: ["fluid.prefs.panel", "autoInit"],
+        gradeNames: ["fluid.prefs.panel"],
         model: {
             show: false,
             language: "en",
@@ -161,8 +160,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
     fluid.videoPlayer.panel.mediaSettings.toggleLanguageOnShow = function (that) {
-        that.applier.modelChanged.addListener("show", function (newModel, oldModel, request) {
-            that.locate("language").prop("disabled", !that.model.show);
+        that.applier.modelChanged.addListener("show", function (show) {
+            that.locate("language").prop("disabled", !show);
         });
     };
 
@@ -171,7 +170,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      */
 /*
     fluid.defaults("fluid.videoPlayer.panel.captionsSettings", {
-        gradeNames: ["fluid.videoPlayer.panel.mediaSettings", "autoInit"],
+        gradeNames: ["fluid.videoPlayer.panel.mediaSettings"],
         preferenceMap: {
             "fluid.videoPlayer.displayCaptions": {
                 "model.show": "default"
@@ -196,7 +195,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      */
 /*
     fluid.defaults("fluid.videoPlayer.panel.transcriptsSettings", {
-        gradeNames: ["fluid.videoPlayer.panel.mediaSettings", "autoInit"],
+        gradeNames: ["fluid.videoPlayer.panel.mediaSettings"],
         preferenceMap: {
             "fluid.videoPlayer.displayTranscripts": {
                 "model.show": "default"
@@ -225,7 +224,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // used independently without the need to specify "fluid.prefs.prefsEditor" explicitly. However,
         // applying it in the grade list causing prefsEditor rendered twice. Needs to find out the
         // cause.
-        gradeNames: ["fluid.viewComponent", "fluid.progressiveCheckerForComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.progressiveCheckerForComponent"],
         componentName: "fluid.videoPlayer.mediaPanels", // where to look for progressive checker options
         progressiveCheckerOptions: {
             checks: [{
@@ -293,7 +292,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      */
 /*
     fluid.defaults("fluid.videoPlayer.vpRelay", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         components: {
             relay: {
                 type: "fluid.videoPlayer.relay"
@@ -305,7 +304,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // Define templates for PrefsEditor with media settings
 /*
     fluid.defaults("fluid.videoPlayer.mediaPanelTemplateLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader", "fluid.progressiveCheckerForComponent", "autoInit"],
+        gradeNames: ["fluid.prefs.resourceLoader", "fluid.progressiveCheckerForComponent"],
         componentName: "fluid.videoPlayer.mediaPanelTemplateLoader",
         progressiveCheckerOptions: {
             checks: [{
@@ -336,7 +335,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      * A grade responsible for binding the UIEnhancer relay to the VideoPlayer
      */
     fluid.defaults("fluid.videoPlayer.enhancerBinder", {
-        gradeNames: ["fluid.littleComponent", "autoInit"],
+        gradeNames: ["fluid.component"],
         listeners: {
             onCreate: "fluid.videoPlayer.enhancerBinder.bindRelay"
         }
@@ -354,10 +353,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.videoPlayer.mediaPanelMessageLoader", {
-        gradeNames: ["fluid.prefs.resourceLoader", "autoInit"],
+        gradeNames: ["fluid.prefs.resourceLoader"],
         templates: {
             captionSettings: "../messages/captions.json",
             transcriptSettings: "../messages/transcripts.json"
         }
     });
-})(jQuery);
+})();

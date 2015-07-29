@@ -11,13 +11,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 /*global jQuery, fluid*/
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 (function ($, fluid) {
+    "use strict";
 
     fluid.defaults("fluid.toggleButton", {
-        gradeNames: ["fluid.viewRelayComponent", "autoInit"],
+        gradeNames: ["fluid.viewComponent"],
         model: {
             pressed: false // default state
         },
@@ -28,8 +26,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         },
         events: {
-            onPress: null, // XXX want to get rid of this: in menu button, use model listener instead of this
-            onTooltipAttached: null
+            onPress: null // XXX want to get rid of this: in menu button, use model listener instead of this
         },
         listeners: {
             onCreate: {
@@ -72,9 +69,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 options: {
                     styles: {
                         tooltip: "{toggleButton}.options.styles.tooltip"
-                    },
-                    listeners: {
-                        onAttach: "{toggleButton}.events.onTooltipAttached"
                     }
                 }
             }

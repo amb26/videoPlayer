@@ -10,13 +10,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  
  */
 
-// Declare dependencies
 /*global fluid, jqUnit, jQuery*/
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 (function ($) {
+    "use strict";
+    
     fluid.registerNamespace("fluid.tests");
 
     fluid.tests.localTranscriptOpts = {
@@ -37,7 +35,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.defaults("fluid.tests.transcriptsTests", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             transcripts: {
                 type: "fluid.videoPlayer.transcript",
@@ -56,7 +54,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.transcriptTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Multiple Transcripts",
             tests: [{
@@ -80,8 +78,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.transcriptsInitialized = function (intervalList, id, that) {
         jqUnit.assertTrue("The transcript text is filled in", $(".flc-videoPlayer-transcript-text").text().length > 0);
-        jqUnit.assertTrue("Each transcript element is wrapped in a properly-named span", 
-                ($(".flc-videoPlayer-transcript-text").find('[id|="' + that.options.transcriptElementIdPrefix + '"]').length > 0));
+        jqUnit.assertTrue("Each transcript element is wrapped in a properly-named span", // TODO: wrap this frequently-used voodoo in a utility
+                ($(".flc-videoPlayer-transcript-text").find("[id|=\"" + that.options.transcriptElementIdPrefix + "\"]").length > 0));
 
         fluid.tests.initialTranscriptText = $(".flc-videoPlayer-transcript-text").text();
     };
@@ -90,7 +88,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.applier.change("currentTranscriptTracks", [1]);
     };
 
-    fluid.tests.transcriptsSwitched = function (intervalList, id, that) {
+    // TODO: These fixtures are cut and pasted from VideoPlayerIntegrationTests
+    fluid.tests.transcriptsSwitched = function () {
         jqUnit.assertTrue("The transcript text is filled in", $(".flc-videoPlayer-transcript-text").text().length > 0);
         jqUnit.assertNotEquals("The transcript text is switched", $(".flc-videoPlayer-transcript-text").text(), fluid.tests.initialTranscriptText.substring(0, 100));
     };
@@ -171,7 +170,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         }
                     };
                 
-                var that = initTranscript(transcriptOps, testOpts);
+                initTranscript(transcriptOps, testOpts);
                 
                 jqUnit.start();
             });
@@ -214,7 +213,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             };
-            var that = initTranscript(fluid.tests.localTranscriptOpts, testOpts);
+            initTranscript(fluid.tests.localTranscriptOpts, testOpts);
         });
 
         jqUnit.asyncTest("transcriptTextId", function () {
@@ -226,7 +225,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     }
                 }
             };
-            var that = initTranscript(fluid.tests.localTranscriptOpts, testOpts);
+            initTranscript(fluid.tests.localTranscriptOpts, testOpts);
         });
 
     });

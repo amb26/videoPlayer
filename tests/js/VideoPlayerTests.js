@@ -10,25 +10,23 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  
  */
 
-// Declare dependencies
 /*global fluid, jqUnit, jQuery*/
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 (function ($) {
+    "use strict";
+    
     $(document).ready(function () {
         jqUnit.module("Video Player Tests");
 
         jqUnit.asyncTest("Configurable template path (FLUID-4572): valid path", function () {
             jqUnit.expect(1);
-            var vidPlayer = fluid.testUtils.initVideoPlayer(".videoPlayer", {
+            fluid.testUtils.initVideoPlayer(".videoPlayer", {
                 listeners: {
                     onTemplateReady: function () {
                         jqUnit.assertTrue("The template should load", true);
                         jqUnit.start();
                     },
-                    onTemplateLoadError: function (href) {
+                    onTemplateLoadError: function () {
                         jqUnit.assertTrue("Template Load Error should not fire", false);
                         jqUnit.start();
                     }
@@ -38,7 +36,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.asyncTest("Configurable template path (FLUID-4572): invalid path", function () {
             jqUnit.expect(1);
-            var vidPlayer = fluid.testUtils.initVideoPlayer(".videoPlayer", {
+            fluid.testUtils.initVideoPlayer(".videoPlayer", {
                 templates: {
                     videoPlayer: {
                         href: "bad/test/path.html"
@@ -49,7 +47,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         jqUnit.assertTrue("The template should not load", false);
                         jqUnit.start();
                     },
-                    onTemplateLoadError: function (href) {
+                    onTemplateLoadError: function () {
                         jqUnit.assertTrue("Event 'onTemplateLoadError' should fire", true);
                         jqUnit.start();
                     }
@@ -140,7 +138,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         };
 
         jqUnit.asyncTest("Video label: default", function () {
-            var vidPlayer = fluid.testUtils.initVideoPlayer(".videoPlayer", {
+            fluid.testUtils.initVideoPlayer(".videoPlayer", {
                 listeners: {
                     onReady: function (videoPlayer) {
                         testVideoLabel(videoPlayer, videoPlayer.options.videoTitle);
@@ -152,7 +150,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.asyncTest("Video label: custom", function () {
             var testTitle = "My Test Video Title";
-            var vidPlayer = fluid.testUtils.initVideoPlayer(".videoPlayer", {
+            fluid.testUtils.initVideoPlayer(".videoPlayer", {
                 videoTitle: testTitle,
                 listeners: {
                     onReady: function (videoPlayer) {
@@ -165,7 +163,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
         jqUnit.asyncTest("Model: 'currentTracks' arrays initialized based on options", function () {
             jqUnit.expect(2);
-            var vidPlayer = fluid.testUtils.initVideoPlayer(".videoPlayer", {
+            fluid.testUtils.initVideoPlayer(".videoPlayer", {
                 listeners: {
                     onReady: function (videoPlayer) {
                         jqUnit.assertEquals("Model's 'currentTracks.captions' array has 0 in it", 0, videoPlayer.model.currentTracks.captions[0]);
@@ -189,7 +187,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testFn: function () {
                 jqUnit.expect(3);
 
-                var vidPlayer = fluid.testUtils.initVideoPlayer(".videoPlayer", {
+                fluid.testUtils.initVideoPlayer(".videoPlayer", {
                     controls: "custom",
                     listeners: {
                         onReady: function (videoPlayer) {
@@ -208,7 +206,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testFn: function () {
                 jqUnit.expect(5);
 
-                var vidPlayer = fluid.testUtils.initVideoPlayer(".videoPlayer", {
+                fluid.testUtils.initVideoPlayer(".videoPlayer", {
                     controls: "custom",
                     listeners: {
                         onControllersReady: function (controllers) {
@@ -234,7 +232,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             testFn: function () {
                 jqUnit.expect(3);
 
-                var vidPlayer = fluid.testUtils.initVideoPlayer(".videoPlayer", {
+                fluid.testUtils.initVideoPlayer(".videoPlayer", {
                     listeners: {
                         onReady: function (videoPlayer) {
                             jqUnit.assertNotUndefined("The sub-component media has been instantiated", videoPlayer.media);

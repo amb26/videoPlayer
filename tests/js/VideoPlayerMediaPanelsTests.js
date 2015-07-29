@@ -10,14 +10,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
  */
 
-// Declare dependencies
-/*global fluid, jqUnit, QUnit, jQuery*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*global fluid, jqUnit, jQuery*/
 
 (function ($) {
-    QUnit.config.reorder = false;
+    "use strict";
 
     fluid.staticEnvironment.vpTest = fluid.typeTag("fluid.tests.videoPlayer");
 
@@ -77,7 +73,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
 
     fluid.defaults("fluid.tests.videoPlayerMediaPanels", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.eventedComponent"],
         components: {
             separatedPanel: {
                 type: "fluid.prefs.separatedPanel",

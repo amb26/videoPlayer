@@ -10,13 +10,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
  */
 
-// Declare dependencies
 /*global fluid, jqUnit, jQuery*/
 
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 (function ($) {
+    "use strict";
+    
     fluid.staticEnvironment.vpTest = fluid.typeTag("fluid.tests.videoPlayer");
 
     fluid.defaults("vp.auxSchema.extraPanels", {
@@ -40,7 +38,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 container: ".videoPlayer-transcript",
                 options: {
                     listeners: {
-                        onReady: function (that) {
+                        onReady: function () {
                             jqUnit.notVisible("Before PrefsEditor reset, transcripts are not visible", $(".flc-videoPlayer-transcriptArea"));
                             fluid.videoPlayer.prefsEditor.prefsEditorLoader.prefsEditor.events.onReset.addListener(function () {
                                 jqUnit.notVisible("After PrefsEditor reset, transcripts are not visible", $(".flc-videoPlayer-transcriptArea"));
@@ -96,7 +94,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                             var anElement = $("[id^=flc-videoPlayer-transcript-element]").eq(7);
                             newTime = (that.convertToMilli(that.options.transcripts[0].tracks[7].inTime) + 1) / 1000;
 
-                            vp.events.onTimeUpdate.addListener(function (currTime, buffered) {
+                            vp.events.onTimeUpdate.addListener(function (currTime) {
                                 // Removing precision from the currTime as chrome returns the value with about 15 decimal places.
                                 // This comes from VideoPLayer_media.js, in the fluid.videoPlayer.media.handleTimeUpdate function.
                                 var reducedCurrTime = Math.floor(1000 * currTime) / 1000;

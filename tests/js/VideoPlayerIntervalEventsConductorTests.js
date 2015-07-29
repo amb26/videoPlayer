@@ -10,27 +10,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  
  */
 
-// Declare dependencies
 /*global fluid, jqUnit, jQuery*/
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 (function ($) {
+    "use strict";
+    
     $(document).ready(function () {
 
         jqUnit.module("Video Player Interval Events Conductor Tests");
     
         // Test data used across all the tests
-        var testIntervalList = 
+        var testIntervalList =
             [{
-                begin: 1000, 
+                begin: 1000,
                 end: 2000
             }, {
-                begin: 1500, 
+                begin: 1500,
                 end: 3000
             }, {
-                begin: 4000, 
+                begin: 4000,
                 end: 5000
             }];
         // End of the test data
@@ -86,7 +84,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         previousIntervalId: previousInterval
                     },
                     listeners: {
-                        onIntervalChange: function (Id) {
+                        onIntervalChange: function () {
                             onIntervalChangeFired = true;
                         }
                     }
@@ -105,7 +103,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
          *********************************************************************************/
 
         fluid.defaults("fluid.videoPlayer.testTimer", {
-            gradeNames: ["fluid.eventedComponent", "autoInit"],
+            gradeNames: ["fluid.eventedComponent"],
             finalInitFunction: "fluid.videoPlayer.testTimer.finalInit",
             timeToTick: null,
             events: {
@@ -126,7 +124,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             var previousInterval = null;
             var expectedCurrentInterval = "0";
 
-            var that = fluid.videoPlayer.intervalEventsConductor({
+            fluid.videoPlayer.intervalEventsConductor({
                 components: {
                     testTimer: {
                         type: "fluid.videoPlayer.testTimer",

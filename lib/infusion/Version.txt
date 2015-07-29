@@ -26,3 +26,9 @@ The following directories were stripped out of the build since they contain code
 * src/lib/infusion/src/lib/jquery/ui/js/
 * src/lib/infusion/src/lib/json/
 * src/lib/infusion/src/lib/normalize/normalizeDependencies.json
+
+Example commands to achieve this:
+
+find . -name "js" | xargs rm -rf
+find . -name "*Dependencies.json" | xargs rm -rf
+find . -type d -empty | xargs rm -rf

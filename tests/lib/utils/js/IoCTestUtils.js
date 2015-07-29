@@ -22,7 +22,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.registerNamespace("fluid.test");
 
     fluid.defaults("fluid.test.testEnvironment", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.eventedComponent"],
         components: {
             sequenceListener: {
                 type: "fluid.test.sequenceListener"
@@ -48,7 +48,7 @@ var fluid_2_0 = fluid_2_0 || {};
     fluid.demands("fluid.test.sequenceListener", "fluid.browser", {funcName: "fluid.test.browserSequenceListener"});
 
     fluid.defaults("fluid.test.browserSequenceListener", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.eventedComponent"],
         listeners: {
             "{testEnvironment}.events.onBeginSequence": {
                 listener: "fluid.test.browserSequenceListener.onBeginSequence",
@@ -131,7 +131,7 @@ var fluid_2_0 = fluid_2_0 || {};
     };
 
     fluid.defaults("fluid.test.testCaseHolder", {
-        gradeNames: ["fluid.eventedComponent", "autoInit"],
+        gradeNames: ["fluid.eventedComponent"],
         mergePolicy: {
             modules: "noexpand"
         },

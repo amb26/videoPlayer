@@ -9,12 +9,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, window, fluid, captionator*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*global jQuery, fluid*/
 
 (function ($, fluid) {
+    "use strict";
 
     /*****************************************************************************
      *   Transcript                                                              *
@@ -22,7 +20,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *****************************************************************************/
     
     fluid.defaults("fluid.videoPlayer.transcript", {
-        gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+        gradeNames: ["fluid.rendererComponent"],
         model: {
             transcriptIntervalId: null,
             selection: undefined,
@@ -218,7 +216,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.locate("transcriptText").html(transcriptText);
         that.updateTranscriptHighlight(that.model.transcriptIntervalId);
 
-        $('span[id|="' + that.options.transcriptElementIdPrefix + '"]').click(function (evt) {
+        // TODO: What is this voodoo?
+        $("span[id|=\"" + that.options.transcriptElementIdPrefix + "\"]").click(function (evt) {
             fluid.videoPlayer.transcript.scrubToTranscriptElement(evt, that);
         });
         fluid.videoPlayer.transcript.setUpKeyboardA11y(that);
@@ -236,7 +235,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Highlight the current transcript
         if (currentTrackId) {
             var currentTranscriptElementId = fluid.videoPlayer.transcript.getTranscriptElementId(that.options.transcriptElementIdPrefix, currentTrackId);
-            var element = fluid.jById(currentTranscriptElementId); 
+            var element = fluid.jById(currentTranscriptElementId);
             element.addClass(that.options.styles.highlight);
             
             // auto scroll the div to display the highlighted transcript element in the middle of the div
@@ -275,13 +274,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // Generate the transcript text
         var transcriptText = "";
         for (var i = 0; i < transcripts.length; i++) {
-            transcriptText = transcriptText + 
-                fluid.videoPlayer.transcript.getTranscriptElement(
-                    fluid.get(transcripts[i], textPath), 
-                    fluid.videoPlayer.transcript.getTranscriptElementId(that.options.transcriptElementIdPrefix, i), 
+            transcriptText += fluid.videoPlayer.transcript.getTranscriptElement(
+                    fluid.get(transcripts[i], textPath),
+                    fluid.videoPlayer.transcript.getTranscriptElementId(that.options.transcriptElementIdPrefix, i),
                     that.options.styles.element
-                ) + 
-                "&nbsp;";
+                ) + "&nbsp;";
         }
         
         that.options.transcripts[currentIndex].transcriptText = transcriptText;
@@ -298,7 +295,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         
         // The 3rd event parameter "that" is for writing unit test, no used at implementing transcript functionalities 
         that.events.onTranscriptsLoaded.fire(intervalList, that.transcriptTextId(), that);
-    };  
+    };
     
     fluid.videoPlayer.transcript.loadTranscript = function (that, currentIndex) {
         var transcriptSource = that.options.transcripts[currentIndex];
@@ -412,8 +409,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.events.onCurrentTranscriptChanged.fire(currentTranscriptIndex);
     };
 
-    fluid.videoPlayer.transcript.updateInterval = function (that, currentInterval, previousInterval) {
-        if (currentInterval !== that.model.transcriptIntervalId) {
+    fluid.videoPlayer.transcript.updateInterval = function (that, currentInterval) {
+        if (currentInterval !== that.model.transcriptIntervalId) { // TODO: unnecessary test now
             that.applier.requestChange("transcriptIntervalId", currentInterval);
         }
     };

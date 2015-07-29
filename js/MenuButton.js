@@ -9,13 +9,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, window, fluid*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*global jQuery, fluid*/
 
 (function ($, fluid) {
-
+    "use strict";
 
     /*****************************************************************************
         Language Menu subcomponent
@@ -25,8 +22,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         Note that the language menu cannot share the model of the controls: it
         needs the list of captions (or transcripts, etc) as its model for rendering.
      *****************************************************************************/
+     
     fluid.defaults("fluid.videoPlayer.languageMenu", {
-        gradeNames: ["fluid.rendererRelayComponent", "autoInit"],
+        gradeNames: ["fluid.rendererComponent"],
         model: {
             showLanguage: false, // maps to displayTranscripts or displayCaptions
             currentLanguage: [], // maps to currentTracks.transcripts or currentTracks.captions; integer index(/indices?)
@@ -155,7 +153,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             that.events.hiddenByKeyboard.fire();
             return false;
         });
-        that.locate("showHide").fluid("activatable", function (evt) {
+        that.locate("showHide").fluid("activatable", function () {
             that.showHide();
             that.events.hiddenByKeyboard.fire();
             return false;
@@ -168,7 +166,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             that.activate(langList.index(evt.currentTarget));
         });
 
-        that.locate("showHide").click(function (evt) {
+        that.locate("showHide").click(function () {
             that.showHide();
         });
     };
@@ -194,7 +192,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.videoPlayer.languageMenu.toggleView = function (that) {
         that.container.toggle();
-        that.container.attr("aria-hidden", !that.container.is(':visible'));
+        that.container.attr("aria-hidden", !that.container.is(":visible"));
     };
 
     fluid.videoPlayer.languageMenu.showMenu = function (that) {
@@ -238,8 +236,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         state of the captions, and so does not become "pressed" when activated;
         activation only shows the menu
      *****************************************************************************/
+     
     fluid.defaults("fluid.videoPlayer.languageControls", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.videoPlayer.indirectReader", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.videoPlayer.indirectReader"],
         model: {
             // XXX don't know if this is correct
             showLanguage: false, // maps to displayTranscripts or displayCaptions
@@ -280,7 +279,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         },
         styles: {
             button: "fl-videoPlayer-button",
-            buttonWithShowing: "fl-videoPlayer-buttonWithShowing"  
+            buttonWithShowing: "fl-videoPlayer-buttonWithShowing"
         },
         templates: {
             menuButton: {
@@ -303,7 +302,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     styles: {
                         init: "{languageControls}.options.styles.button",
                         // TODO: see if we want different style for pressed form
-                        pressed: "{languageControls}.options.styles.button"  
+                        pressed: "{languageControls}.options.styles.button"
                     },
                     selectors: {
                         button: "{languageControls}.options.selectors.button",
@@ -399,8 +398,12 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
 
     fluid.videoPlayer.languageControls.loadTemplates = function (that) {
-        fluid.fetchResources(that.options.templates, function (resourceSpec) {
-            that.container.append(that.options.templates.menuButton.resourceText);
+        fluid.fetchResources(that.options.templates, function () {
+            var menuButtonTemplate = that.options.templates.menuButton.resourceText;
+            if (!menuButtonTemplate) {
+                fluid.fail("Failed to load menuButton resource template");
+            }
+            that.container.append(menuButtonTemplate);
             that.events.afterFetchResources.fire(that);
         });
     };
@@ -410,7 +413,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      **************************************************************************************/
 
     fluid.defaults("fluid.videoPlayer.languageControls.eventBinder", {
-        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         listeners: {
             "{button}.events.onPress": "{menu}.toggleView"
         }

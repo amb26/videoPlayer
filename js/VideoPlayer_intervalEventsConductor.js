@@ -11,10 +11,8 @@ https://source.fluidproject.org/svn/LICENSE.txt
 
 /*global jQuery, fluid*/
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 (function ($, fluid) {
+    "use strict";
 
     /*********************************************************************************
      * fluid.videoPlayer.intervalEventsConductor                                     *
@@ -24,7 +22,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
      *********************************************************************************/
     
     fluid.defaults("fluid.videoPlayer.intervalEventsConductor", {
-        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         events: {
             onTimeUpdate: null,
             onIntervalChange: null,
@@ -38,14 +36,14 @@ https://source.fluidproject.org/svn/LICENSE.txt
         listeners: {
             onTimeUpdate: {
                 listener: "fluid.videoPlayer.intervalEventsConductor.handleTimeUpdate",
-                args: ["{fluid.videoPlayer.intervalEventsConductor}", "{arguments}.0", "{arguments}.1"]
+                args: ["{fluid.videoPlayer.intervalEventsConductor}", "{arguments}.0", "{arguments}.1"] // currentTime, buffered (unused)
             }
         },
         invokers: {
             setIntervalList: {
                 funcName: "fluid.videoPlayer.intervalEventsConductor.setIntervalList",
                 args: ["{fluid.videoPlayer.intervalEventsConductor}", "{arguments}.0"]
-            }  
+            }
         },
         // An array of the time intervals with all the begin and end time in millisecond
         // Example: Array[intervalID] = {begin: beginTimeInMilli, end: endTimeInMilli}
@@ -94,7 +92,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
     /**
      * The main process to re-wire the events
      */
-    fluid.videoPlayer.intervalEventsConductor.handleTimeUpdate = function (that, currentTime, buffered) {
+    fluid.videoPlayer.intervalEventsConductor.handleTimeUpdate = function (that, currentTime) {
         if (that.options.intervalList) {
             var previousInterval = that.model.previousIntervalId;
             var currentInterval = fluid.videoPlayer.intervalEventsConductor.findCurrentInterval(currentTime, that.options.intervalList, previousInterval);

@@ -10,15 +10,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  
  */
 
-// Declare dependencies
-/*global fluid, jqUnit, jQuery, captionator*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*global fluid, jqUnit, jQuery*/
 
 (function ($) {
+    "use strict";
     $(document).ready(function () {
-        fluid.setLogging(false);    // disable it not to mess up with FireBug in FF
         
         var nativeTrackSupport = (typeof document.createElement("video").addTextTrack === "function");
 
@@ -35,7 +31,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             $.each(tracksShowing, function (index, showing) {
                 var track = tracks[index];
                 var msg = showing ? " set to SHOWING" : " set to DISABLED";
-                jqUnit.assertEquals(html5Captionator.options.captions[index].label + msg, 
+                jqUnit.assertEquals(html5Captionator.options.captions[index].label + msg,
                     showing ? track.track.SHOWING : track.track.DISABLED, track.track.mode);
             });
         };
@@ -146,10 +142,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                 testInit(optionsFull);
             }
         }];
-
-        var noHtml5envFeatures = {
-            supportsHtml5: null
-        };
 
         var html5tests = [{
             desc: "HTML5: html5Captionator was initialized",

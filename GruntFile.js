@@ -1,12 +1,16 @@
+/* global module */
+
 module.exports = function (grunt) {
+    "use strict";
     grunt.initConfig({
-        pkg: grunt.file.readJSON('package.json'),
+        pkg: grunt.file.readJSON("package.json"),
         packageName: grunt.option("packageName") || "videoPlayer-all",
         srcConcatenatedPath: "build/<%= packageName %>.js",
         minConcatenatedPath: "build/<%= packageName %>-min.js",
         vpFiles: {
             src: ["ReleaseNotes.txt", "README.txt", "css/**", "demos/**", "html/**", "images/**", "js/**", "lib/**", "tests/**", "messages/**", "fonts/**"],
-            dest: "./"},
+            dest: "./"
+        },
         clean: {
             build: "build",
             products: "products"
@@ -71,19 +75,31 @@ module.exports = function (grunt) {
                 },
                 src: ["**/*Dependencies.json"]
             }
+        },
+        jshint: {
+            all: ["js/*.js", "demos/**/*.js", "tests/**/*.js"],
+            buildScripts: ["Gruntfile.js"],
+            options: {
+                jshintrc: true
+            }
+        },
+        jsonlint: {
+            all: ["messages/**/*.json", "tests/**/*.json", "demos/**/*.json"]
         }
     });
-
-    console.log("src path: " + grunt.config.get("srcConcatenatedPath"));
 
     grunt.loadNpmTasks("grunt-contrib-clean");
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-compress");
     grunt.loadNpmTasks("grunt-contrib-uglify");
-    grunt.loadNpmTasks('grunt-modulefiles');
+    grunt.loadNpmTasks("grunt-modulefiles");
+    grunt.loadNpmTasks("grunt-contrib-jshint");
+    grunt.loadNpmTasks("grunt-jsonlint");
 
     grunt.registerTask("build-src", ["clean", "modulefiles", "concat"]);
     grunt.registerTask("build-min", ["build-src", "uglify"]);
     grunt.registerTask("build", ["build-min", "compress", "clean:build"]);
     grunt.registerTask("default", ["build"]);
+    
+    grunt.registerTask("lint", "Apply jshint and jsonlint", ["jshint", "jsonlint"]);
 };

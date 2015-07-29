@@ -11,22 +11,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
 /*global jQuery, fluid*/
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 
 (function ($, fluid) {
-
-    fluid.isTracing = false;
+    "use strict";
 
     // definitions of candidate framework functions developed during VideoPlayer development
+    // TODO: Contents of this file now to be destroyed without mercy
     
-    
-    // feature detection functions to be used by the progressive enhancement system
-    fluid.registerNamespace("fluid.browser");
-    fluid.browser.nativeVideoSupport = function () {
-        return !!document.createElement('video').canPlayType;
-    };
     
     
     // The "model relay" system - a framework sketch for a junction between an applier
@@ -44,7 +35,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // as "state".
     
     fluid.defaults("fluid.modelRelay", {
-        gradeNames: ["fluid.eventedComponent", "fluid.modelRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         targets: {},
         rules: {},
         events: {
@@ -68,7 +59,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
     
     fluid.modelRelay.registerTarget = function(that, target) {
-        var specListeners = fluid.transform(that.options.rules, function(value, key) {
+        fluid.each(that.options.rules, function(value, key) {
             var listener = function (newModel, oldModel, changeList) {
                 var newValue = fluid.get(newModel, key);
                 if (newValue === fluid.get(oldModel, key)) {
@@ -78,8 +69,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     target.applier.requestChange(value, newValue);
                 } else {
                     var fullargs = [newValue, key, target, changeList];
-                    if (value.lens) {
-                        var transformed = value.lens.transform.apply(null, [newValue, key]);
+                    if (value.lens) { // apparently unused block!!
+                        // var transformed = value.lens.transform.apply(null, [newValue, key]);
                         target.applier.requestChange(value.targetPath, newValue);
                     }
                     else if (target !== that) {
@@ -92,10 +83,9 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                         // transformed later
                         fluid.requestChanges(that.pentApplier, changeList);
                     }
-                }   
+                }
             };
             that.options.sourceApplier.modelChanged.addListener(key, listener);
-            return value.func? listener: null;
         });
         // Replay any pent-up changes into a new genuine target 
         if (target !== that) {
@@ -122,7 +112,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         if (typeof(func) === "string") {
             var funcval = fluid.getGlobalValue(func);
             if (typeof(funcval) !== expectedType) {
-                fluid.fail("Relay func " + func + " could not be looked up to " + expectedType + " function for rule " + key); 
+                fluid.fail("Relay func " + func + " could not be looked up to " + expectedType + " function for rule " + key);
             }
             struct[member] = funcval;
         }
@@ -160,12 +150,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
     
-    fluid.defaults("fluid.lens", {
-        gradeNames: ["fluid.littleComponent"]
-    });
-    
     fluid.defaults("fluid.scaleLens", {
-        gradeNames: ["fluid.lens", "autoInit"],
+        gradeNames: ["fluid.component"],
         scaleFactor: 1.0,
         invokers: {
             transform: {
@@ -185,25 +171,11 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     fluid.scaleLens.reverseTransform = function(that, value) {
         return value / that.options.scaleFactor;
     };
-    
-    // TODO: move into DataBinding
-    fluid.linearRangeGuard = function(min, max) {
-        return function (model, changeRequest, applier) {
-            var newValue = changeRequest.value;
-    
-            if (newValue < min) {
-                newValue = min;
-            } else if (newValue > max) {
-                newValue = max;
-            }
-            changeRequest.value = newValue;
-        };
-    };
 
     // A "mini-grade" to ease the work of dealing with "modelPath" idiom components - this
     // is only desirable until changeApplier relay gets into the core framework
     fluid.defaults("fluid.videoPlayer.indirectReader", {
-        gradeNames: ["fluid.modelRelayComponent", "autoInit"],
+        gradeNames: ["fluid.modelComponent"],
         invokers: {
             readIndirect: {
                 funcName: "fluid.videoPlayer.indirectReader.readIndirect",
@@ -221,13 +193,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     };
     fluid.videoPlayer.indirectReader.writeIndirect = function(that, pathName, value, source) {
         fluid.fireSourcedChange(that.applier, fluid.get(that.options, pathName), value, source);
-    };
-    
-    // Check if fluid static environment contains the given context feature.
-    // If yes, returns the grade. Otherwise, returns an empty string.
-    fluid.videoPlayer.getGrade = function (envFeature, grade) {
-        var toReplace = new RegExp('\\.', 'g');
-        return !!fluid.get(fluid.staticEnvironment, envFeature.replace(toReplace, "--")) ? grade : "";
     };
 
 })(jQuery, fluid);

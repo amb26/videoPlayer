@@ -9,12 +9,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, window, fluid*/
-
-// JSLint options
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*global jQuery, fluid*/
 
 (function ($, fluid) {
+    "use strict";
 
     fluid.videoPlayer.transformVolumeChange = fluid.scaleLens({scaleFactor: 0.01});
 
@@ -52,7 +50,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     // perform relay from its model changes to any number of target videoPlayer components
     // currently, the targets should be added procedurally using the "addTarget" member
     fluid.defaults("fluid.videoPlayer.relay", {
-        gradeNames: ["fluid.modelRelay", "autoInit"],
+        gradeNames: ["fluid.modelRelay"],
         // unpleasant lack of encapsulation caused by requirement for immediate access to applier
         // (fetch is called in finalInit function) TODO: make a proper API for this, although
         // better to implement "model events system"

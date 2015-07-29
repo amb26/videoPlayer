@@ -11,13 +11,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://source.fluidproject.org/svn/LICENSE.txt
 */
 
-/*global jQuery, window, fluid, captionator*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
+/*global jQuery, fluid, captionator*/
 
 (function ($, fluid) {
+    "use strict";
     
     /********************************************************************
      * HTML5 Captionator                                                *
@@ -25,7 +22,7 @@ https://source.fluidproject.org/svn/LICENSE.txt
      ********************************************************************/
 
     fluid.defaults("fluid.videoPlayer.html5Captionator", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.videoPlayer.indirectReader", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.videoPlayer.indirectReader"],
         model: {},
         modelListeners: {
             displayCaptions: "{html5Captionator}.events.onCaptionChanged.fire",
@@ -97,13 +94,10 @@ https://source.fluidproject.org/svn/LICENSE.txt
     };
 
     fluid.videoPlayer.html5Captionator.refreshCaptions = function (that) {
-        if (that.modelRelay.__CURRENTLY_IN_EVALUATION__) {
-            return;
-        }
         var tracks = $("track", that.locate("video"));
         var display = that.readIndirect("elPaths.displayCaptions");
         if (display) {
-            fluid.videoPlayer.html5Captionator.showCurrentTrack(that.readIndirect("elPaths.currentCaptions"), 
+            fluid.videoPlayer.html5Captionator.showCurrentTrack(that.readIndirect("elPaths.currentCaptions"),
                 tracks, that.options.captions);
         } else {
             fluid.videoPlayer.html5Captionator.hideAllTracks(tracks);

@@ -10,19 +10,16 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
  
  */
 
-// Declare dependencies
 /*global fluid, jqUnit, jQuery*/
 
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
-
 (function ($) {
+    "use strict";
     fluid.registerNamespace("fluid.tests");
 
     fluid.tests.transcriptMenuSelector = ".flc-videoPlayer-transcriptControls-container .flc-menuButton-languageMenu";
 
     fluid.defaults("fluid.tests.transcriptsTests", {
-        gradeNames: ["fluid.test.testEnvironment", "autoInit"],
+        gradeNames: ["fluid.test.testEnvironment"],
         components: {
             videoPlayer: {
                 type: "fluid.videoPlayer",
@@ -81,7 +78,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
     });
 
     fluid.defaults("fluid.tests.transcriptTester", {
-        gradeNames: ["fluid.test.testCaseHolder", "autoInit"],
+        gradeNames: ["fluid.test.testCaseHolder"],
         modules: [{
             name: "Multiple Transcripts",
             tests: [{
@@ -113,13 +110,13 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.tests.transcriptsInitialized = function (that) {
         jqUnit.assertTrue("The transcript text is filled in", $(".flc-videoPlayer-transcript-text").text().length > 0);
-        jqUnit.assertTrue("Each transcript element is wrapped in a properly-named span", 
-                ($(".flc-videoPlayer-transcript-text").find('[id|="' + that.transcript.options.transcriptElementIdPrefix + '"]').length > 0));
+        jqUnit.assertTrue("Each transcript element is wrapped in a properly-named span",
+                ($(".flc-videoPlayer-transcript-text").find("[id|=\"" + that.transcript.options.transcriptElementIdPrefix + "\"]").length > 0));
 
         fluid.tests.initialTranscriptText = $(".flc-videoPlayer-transcript-text").text();
     };
 
-    fluid.tests.transcriptsSwitched = function (intervalList, id, that) {
+    fluid.tests.transcriptsSwitched = function () {
         jqUnit.assertTrue("The transcript text is filled in", $(".flc-videoPlayer-transcript-text").text().length > 0);
         jqUnit.assertNotEquals("The transcript text is switched", $(".flc-videoPlayer-transcript-text").text(), fluid.tests.initialTranscriptText.substring(0, 100));
 
@@ -159,7 +156,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Play button - Play/Pause", function () {
             jqUnit.expect(2);
             
-            fluid.videoPlayer.testPlayButton = function (that) {
+            fluid.videoPlayer.testPlayButton = function () {
                 // Play button plays and pauses video
                 var playButton = $(".flc-videoPlayer-play");
                 var clickFunc = function () { playButton.click(); };
@@ -179,7 +176,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Container click - Play/Pause", function () {
             jqUnit.expect(2);
 
-            fluid.videoPlayer.testContainerClick = function (that) {
+            fluid.videoPlayer.testContainerClick = function () {
                 // Clicking on video container plays and pauses video
                 var videoPlayerContainer = $(".flc-videoPlayer-video-container");
                 var clickFunc = function () { videoPlayerContainer.mousedown(); };
@@ -199,7 +196,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Mute button", function () {
             jqUnit.expect(2);
 
-            fluid.videoPlayer.testMuteButton = function (that) {
+            fluid.videoPlayer.testMuteButton = function () {
                 var video = $(".flc-videoPlayer-video");
                 jqUnit.assertFalse("The video is NOT initially muted", video[0].muted);
                 
@@ -222,10 +219,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         jqUnit.asyncTest("Show transcript button", function () {
             jqUnit.expect(2);
 
-            fluid.videoPlayer.testTranscript = function (that) {
-                var video = $(".flc-videoPlayer-video");
-                var transMenu = $(fluid.tests.transcriptMenuSelector);
-
+            fluid.videoPlayer.testTranscript = function () {
                 jqUnit.assertFalse("The transcript panel is hidden initially", $(".flc-videoPlayer-transcriptArea").is(":visible"));
                 
                 // Clicking "show transcript" menu item to open transcript panel

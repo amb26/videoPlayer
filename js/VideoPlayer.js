@@ -11,13 +11,10 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, window, fluid*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*global jQuery, fluid*/
 
 (function ($, fluid) {
-    fluid.setLogging(false);
+    "use strict";
     
     /*******************************************************************************
      * Video Player                                                                *
@@ -28,17 +25,26 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *******************************************************************************/
     
     fluid.registerNamespace("fluid.videoPlayer");
+    fluid.registerNamespace("fluid.browser");
+    
+    // feature detection functions to be used by the progressive enhancement system
+
+    fluid.browser.hasNativeVideoSupport = function () {
+        return !!document.createElement("video").canPlayType;
+    };
     
     fluid.videoPlayer.isSafari = function () {
         var ua = navigator.userAgent.toLowerCase();
-        return ((ua.indexOf("safari") > 0) && (ua.indexOf("chrome") < 0)) ? fluid.typeTag("fluid.browser.safari") : undefined;
+        return ((ua.indexOf("safari") >= 0) && (ua.indexOf("chrome") === -1));
     };
     
-    fluid.enhance.check({
-        "fluid.browser.safari": "fluid.videoPlayer.isSafari"
+    fluid.contextAware.makeChecks({
+        "fluid.videoPlayer.safari": "fluid.videoPlayer.isSafari",
+        "fluid.browser.nativeVideoSupport": "fluid.browser.hasNativeVideoSupport"
     });
+
     
-    //This is the default key bindings
+    // This is the default key bindings
     fluid.videoPlayer.defaultKeys = {
         play: {
             modifier: $.ui.keyCode.SHIFT,
@@ -73,7 +79,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
     };
 
-    fluid.enhance.check({"fluid.browser.nativeVideoSupport": "fluid.browser.nativeVideoSupport"});
 
     /**
      * Video player renders HTML 5 video content and degrades gracefully to an alternative.
@@ -83,14 +88,25 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      */
 
     fluid.defaults("fluid.videoPlayer", {
-        gradeNames: ["fluid.viewRelayComponent", "fluid.progressiveCheckerForComponent", "{that}.getCaptionGrade", "autoInit"],
+        gradeNames: ["fluid.viewComponent", "fluid.contextAware"],
         componentName: "fluid.videoPlayer",
-        progressiveCheckerOptions: {
-            checks: [{
-                // Don't animate show/hide in Safari
-                feature: "{fluid.browser.safari}",
-                contextName: "fluid.videoPlayer.simpleControllers"
-            }]
+        contextAwareness: {
+            animation: {
+                checks: {
+                    safari: { // Don't animate show/hide in Safari
+                        contextValue: "{fluid.videoPlayer.safari}",
+                        gradeNames: "fluid.videoPlayer.simpleControllers"
+                    }
+                }
+            },
+            captions: {
+                checks: {
+                    videoSupport: {
+                        contextValue: "{fluid.browser.nativeVideoSupport}",
+                        gradeNames: "fluid.videoPlayer.captionSupport"
+                    }
+                }
+            }
         },
         components: {
             media: {
@@ -199,11 +215,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
                     },
                     templates: {
                         menuButton: "{videoPlayer}.options.templates.menuButton"
-/*
-                    },
-                    members: {
-                        applier: "{videoPlayer}.applier"
-*/
                     }
                 }
             }
@@ -340,9 +351,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         invokers: {
             showControllers: "fluid.videoPlayer.showControllersAnimated",
             hideControllers: "fluid.videoPlayer.hideControllersAnimated",
-            getCaptionGrade: {
-                funcName: "fluid.videoPlayer.getCaptionGrade"
-            },
             play: {
                 funcName: "fluid.videoPlayer.play",
                 args: ["{videoPlayer}"]
@@ -361,10 +369,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             }
         }
     });
-    
-    fluid.videoPlayer.getCaptionGrade = function () {
-        return fluid.videoPlayer.getGrade("fluid.browser.nativeVideoSupport", "fluid.videoPlayer.captionSupport");
-    };
+
 
     // This grade is solely for the purpose of adding the html5captionator subcomponent,
     // which doesn't happen if native video is not supported. It should never be instantiated.
@@ -470,8 +475,8 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
             ol.addClass(olstyle);
         } else {
             ol.removeClass(olstyle);
-        }    
-    }; 
+        }
+    };
 
     var bindVideoPlayerDOMEvents = function (that) {
         var videoContainer = that.locate("videoContainer");
@@ -483,7 +488,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         // any mouse events. The first listener plays/pauses video when the click is received by the video overlay.
         // The second listener prevents the mousedown event on the controller bar from bubbling up to the video
         // overlay so the video does not respond with playing/pausing.
-        that.locate("overlay").mousedown(function (ev) {
+        that.locate("overlay").mousedown(function () {
             that.play();
         });
         
@@ -525,7 +530,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 
     fluid.videoPlayer.addKindToTracks = function (that) {
         fluid.each(that.options.defaultKinds, function (defaultKind, index) {
-            fluid.videoPlayer.addDefaultKind(fluid.get(that.options.video, index), defaultKind);  
+            fluid.videoPlayer.addDefaultKind(fluid.get(that.options.video, index), defaultKind);
         });
         
     };
@@ -569,7 +574,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         that.events.afterScrub.fire();
     };
 
-    fluid.videoPlayer.addVolumeGuard = function (that) {
+    fluid.videoPlayer.addVolumeGuard = function () {
         // TODO: declarative syntax for this in framework
         // note that the "mega-model" is shared throughout all components - morally, this should go into the 
         // volume control component, but it is best to get at the single model + applier as early as possible
@@ -628,7 +633,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         return that;
     };
         
-    //returns the time in format hh:mm:ss from a time in seconds 
+    // returns the time in format hh:mm:ss from a time in seconds 
     fluid.videoPlayer.formatTime = function (time) {
         var fullTime = Math.floor(time);
         var sec = fullTime % 60;
@@ -650,7 +655,7 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
      *********************************************************************************/
         
     fluid.defaults("fluid.videoPlayer.eventBinder", {
-        gradeNames: ["fluid.modelRelayComponent", "autoInit"]
+        gradeNames: ["fluid.modelComponent"]
     });
 
     /*******************************************************************
@@ -661,14 +666,14 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         var seconds = parseFloat(millis) / 1000;
         seconds = seconds < 0 || isNaN(seconds) ? 0 : seconds;
 
-        var hours = parseInt(seconds / 3600);
-        var minutes = parseInt(seconds / 60) % 60;
+        var hours = parseInt(seconds / 3600, 10);
+        var minutes = parseInt(seconds / 60, 10) % 60;
         seconds = (seconds % 60).toFixed(3);
 
         // Return result of type HH:MM:SS.mmm
-        return (hours < 10 ? "0" + hours : hours) + ":"
-            + (minutes < 10 ? "0" + minutes : minutes) + ":"
-            + (seconds  < 10 ? "0" + seconds : seconds);
+        return (hours < 10 ? "0" + hours : hours) + ":" +
+            (minutes < 10 ? "0" + minutes : minutes) + ":" +
+            (seconds  < 10 ? "0" + seconds : seconds);
     };
 
     /******************************************************************************************************
@@ -698,10 +703,10 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         }
 
         // Hard coded URL to amara here         
-        var url = encodeURI("http://www.amara.org/api2/partners/videos/?video_url=" + videoUrl + "&callback=?");        
+        var url = encodeURI("http://www.amara.org/api2/partners/videos/?video_url=" + videoUrl + "&callback=?");
         $.getJSON(url, function( data ) {
-            var captionUrl = encodeURI("http://www.amara.org/api2/partners/videos/" + data.objects[0].id + "/languages/" + lang + "/subtitles/?callback=?");        
-            $.getJSON(captionUrl, callback);            
+            var captionUrl = encodeURI("http://www.amara.org/api2/partners/videos/" + data.objects[0].id + "/languages/" + lang + "/subtitles/?callback=?");
+            $.getJSON(captionUrl, callback);
         });
         
     };

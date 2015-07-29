@@ -9,15 +9,13 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-/*global jQuery, window, fluid*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
+/*global jQuery, fluid*/
 
 (function ($, fluid) {
+    "use strict";
 
     fluid.defaults("fluid.videoPlayer.showHide", {
-        gradeNames: ["fluid.modelRelayComponent", "autoInit", "{showHide}.createModelListenersGrade"],
+        gradeNames: ["fluid.modelComponent", "{showHide}.createModelListenersGrade"],
         model: {
             isShown: {
                 // A list of flags (true or false) to define the showing/hiding of any selectors
@@ -66,8 +64,6 @@ https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
         if (!container) {
             return;
         }
-
-        var showFlag = fluid.get(that.model, modelPath);
         container.toggle(newVal);
     };
 

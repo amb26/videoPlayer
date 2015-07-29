@@ -9,15 +9,13 @@ You may obtain a copy of the ECL 2.0 License and BSD License at
 https://github.com/fluid-project/infusion/raw/master/Infusion-LICENSE.txt
 */
 
-// Declare dependencies
 /*global fluid, jqUnit, jQuery*/
-
-// JSLint options 
-/*jslint white: true, funcinvoke: true, undef: true, newcap: true, nomen: true, regexp: true, bitwise: true, browser: true, forin: true, maxerr: 100, indent: 4 */
 
 fluid.registerNamespace("fluid.tests");
 
 (function ($) {
+    "use strict";
+    
     $(document).ready(function () {
 
         jqUnit.module("Toggle Button Tests");
@@ -42,7 +40,7 @@ fluid.registerNamespace("fluid.tests");
 
         jqUnit.asyncTest("State change", function () {
             jqUnit.expect(3);
-            var testComponent = fluid.tests.initToggleButton({
+            fluid.tests.initToggleButton({
                 listeners: {
                     onCreate: function (that) {
                         jqUnit.assertEquals("Initial state should be 'false'", false, that.model.pressed);
@@ -59,7 +57,7 @@ fluid.registerNamespace("fluid.tests");
 
         jqUnit.asyncTest("onPress event", function () {
             jqUnit.expect(1);
-            var testComponent = fluid.tests.initToggleButton({
+            fluid.tests.initToggleButton({
                 listeners: {
                     onCreate: function (that) {
                         that.applier.modelChanged.addListener("pressed", function () {
@@ -91,7 +89,7 @@ fluid.registerNamespace("fluid.tests");
         });
 
         jqUnit.asyncTest("Default integrated functionality", function () {
-            var testComponent = fluid.tests.initToggleButton({
+            fluid.tests.initToggleButton({
                 listeners: {
                     onPress: fluid.tests.onPressEventHandler,
                     onCreate: function (that) {
@@ -114,7 +112,7 @@ fluid.registerNamespace("fluid.tests");
                 press: "press me",
                 release: "release me"
             };
-            var testComponent = fluid.tests.initToggleButton({
+            fluid.tests.initToggleButton({
                 strings: testStrings,
                 listeners: {
                     onCreate: function (that) {
@@ -131,31 +129,31 @@ fluid.registerNamespace("fluid.tests");
             });
         });
 
-        var myCustomText = "My custom text to replace default toggleButton's tooltip content behaviour"; 
+        var myCustomText = "My custom text to replace default toggleButton's tooltip content behaviour";
         fluid.tests.tooltipContentFunction = function () {
             return myCustomText;
         };
 
         jqUnit.asyncTest("Changing tooltipContentFunction", function () {
             var testStrings = {
-                    press: "press me",
-                    release: "release me"
-                },
-                testComponent = fluid.tests.initToggleButton({
-                    invokers: {
-                        tooltipContentFunction: {
-                            funcName: "fluid.tests.tooltipContentFunction"
-                        }
-                    },
-                    strings: testStrings,
-                    listeners: {
-                        onCreate: function (that) {
-                            var toggleButton = that.locate("button"),
-                                tooltip = fluid.testUtils.getTooltipCheckString(toggleButton, myCustomText);
-                            jqUnit.start();
-                        }
+                press: "press me",
+                release: "please release me"
+            };
+            fluid.tests.initToggleButton({
+                invokers: {
+                    tooltipContentFunction: {
+                        funcName: "fluid.tests.tooltipContentFunction"
                     }
-                });
+                },
+                strings: testStrings,
+                listeners: {
+                    onCreate: function (that) {
+                        var toggleButton = that.locate("button");
+                        fluid.testUtils.getTooltipCheckString(toggleButton, myCustomText);
+                        jqUnit.start();
+                    }
+                }
+            });
         });
 
         jqUnit.asyncTest("Label text", function () {
